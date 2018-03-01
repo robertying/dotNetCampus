@@ -1,0 +1,30 @@
+﻿<ContentDialog
+    x:Class="CampusNet.AccountDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:CampusNet"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Uid="Dialog"
+    Title="TITLE"
+    IsPrimaryButtonEnabled="False"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock x:Uid="Username" Margin="0,0,0,5" />
+            <TextBox
+                x:Name="UsernameTextBox"
+                InputScope="AlphanumericHalfWidth"
+                Text="{x:Bind OldAccount.Username, Mode=OneWay}"
+                TextChanged="UsernameTextBox_TextChanged" />
+            <TextBlock x:Uid="Password" Margin="0,10,0,5" />
+            <PasswordBox
+                x:Name="PasswordBox"
+                Password="{x:Bind OldAccount.Password, Mode=OneWay}"
+                PasswordChanged="PasswordBox_PasswordChanged" />
+        </StackPanel>
+    </Grid>
+</ContentDialog>

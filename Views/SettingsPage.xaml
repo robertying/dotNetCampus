@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="CampusNet.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:CampusNet"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="Transparent">
+        <StackPanel Margin="12,0,0,0">
+            <!--<ToggleSwitch
+                Header="Data Roaming"
+                OffContent="Off"
+                OnContent="On"
+                Toggled="DataRoamingToggleSwitch_Toggled" />-->
+            <HyperlinkButton
+                Margin="0,20,0,0"
+                Click="PrivacyPolicyHyperlink_Click"
+                FontSize="12">
+                <TextBlock>Privacy Policy</TextBlock>
+            </HyperlinkButton>
+            <HyperlinkButton
+                Margin="0,5,0,0"
+                Click="GitHubHyperlink_Click"
+                FontSize="12">
+                <TextBlock>robertying / dotNetCampus</TextBlock>
+            </HyperlinkButton>
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}">© 2018 Robert Ying. All rights reserved.</TextBlock>
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}">
+                MIT licensed.
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="WiFiAccessDenied" xml:space="preserve">
+    <value>无法连接到Wi-Fi</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>账户</value>
+  </data>
+  <data name="AddAccountDialog" xml:space="preserve">
+    <value>添加账户</value>
+  </data>
+  <data name="AddFavoriteNetwork.Text" xml:space="preserve">
+    <value>将当前网络添加到收藏</value>
+  </data>
+  <data name="AddNewAccount.Text" xml:space="preserve">
+    <value>添加账户</value>
+  </data>
+  <data name="Auto-loginToast" xml:space="preserve">
+    <value>已成功登录账户 {0}
+流量：{1}
+余额：{2}</value>
+  </data>
+  <data name="Auto-loginDescription.Text" xml:space="preserve">
+    <value>自动登录只对收藏的网络以及 Tsinghua 和 Tsinghua-5G 启用
+单击后可选择从收藏中移除该网络</value>
+  </data>
+  <data name="ButtonAccount.Content" xml:space="preserve">
+    <value>账户</value>
+  </data>
+  <data name="ButtonBalance.Content" xml:space="preserve">
+    <value>余额</value>
+  </data>
+  <data name="ButtonEdit.Content" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="ButtonLogin.Content" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="ButtonNetwork.Content" xml:space="preserve">
+    <value>网络</value>
+  </data>
+  <data name="ButtonOffline.Content" xml:space="preserve">
+    <value>离线</value>
+  </data>
+  <data name="ButtonRemove.Content" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="ButtonSession.Content" xml:space="preserve">
+    <value>会话</value>
+  </data>
+  <data name="AccountValidationFail" xml:space="preserve">
+    <value>无法验证该账户。</value>
+  </data>
+  <data name="ConnectPopupNotification" xml:space="preserve">
+    <value>在弹出窗口中连接新的网络。</value>
+  </data>
+  <data name="ConnectedTo" xml:space="preserve">
+    <value>当前已连接到</value>
+  </data>
+  <data name="Connection.Text" xml:space="preserve">
+    <value>连接</value>
+  </data>
+  <data name="ConnectToAnotherNetwork.Text" xml:space="preserve">
+    <value>连接其他网络</value>
+  </data>
+  <data name="Current.Text" xml:space="preserve">
+    <value>当前</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>未连接</value>
+  </data>
+  <data name="DisconnectSessionConfirm" xml:space="preserve">
+    <value>您是否要断开此会话？</value>
+  </data>
+  <data name="RemoveAccountConfirm" xml:space="preserve">
+    <value>您是否要移除此账户？</value>
+  </data>
+  <data name="RemoveNetworkConfirm" xml:space="preserve">
+    <value>您是否要从收藏中移除该网络？</value>
+  </data>
+  <data name="DragAndDrop.Text" xml:space="preserve">
+    <value>拖拽或单击以更改当前账户</value>
+  </data>
+  <data name="EditAccountDialog" xml:space="preserve">
+    <value>编辑账户</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="OpenPanelFail" xml:space="preserve">
+    <value>无法打开可用网络窗口，请重试。</value>
+  </data>
+  <data name="LoginFail" xml:space="preserve">
+    <value>登录失败。</value>
+  </data>
+  <data name="Favorites.Text" xml:space="preserve">
+    <value>收藏</value>
+  </data>
+  <data name="AlreadyFavorite" xml:space="preserve">
+    <value>已经在收藏中。</value>
+  </data>
+  <data name="AddedToFavorites" xml:space="preserve">
+    <value>成功被添加到收藏。</value>
+  </data>
+  <data name="NavViewItemAccount.Content" xml:space="preserve">
+    <value>账户</value>
+  </data>
+  <data name="NavViewItemGeneral.Content" xml:space="preserve">
+    <value>总览</value>
+  </data>
+  <data name="NavViewItemWiFi.Content" xml:space="preserve">
+    <value>网络</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="NoWiFiAdapter" xml:space="preserve">
+    <value>未检测到Wi-Fi适配器</value>
+  </data>
+  <data name="Offline" xml:space="preserve">
+    <value>离线</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>好</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>在线</value>
+  </data>
+  <data name="Password.Text" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="ConnectFirst" xml:space="preserve">
+    <value>请先连接到网络。</value>
+  </data>
+  <data name="Sessions.Text" xml:space="preserve">
+    <value>会话</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="FrequentLogin" xml:space="preserve">
+    <value>尝试过于频繁，请稍后再试。</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>未找到该用户。</value>
+  </data>
+  <data name="Username.Text" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>请注意</value>
+  </data>
+  <data name="Wi-Fi" xml:space="preserve">
+    <value>网络</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>管理你的校园网</value>
+  </data>
+  <data name="RemoveOnlyAccountFail" xml:space="preserve">
+    <value>无法移除唯一的账户。</value>
+  </data>
+  <data name="AddAccountSuccess" xml:space="preserve">
+    <value>账户已被添加。</value>
+  </data>
+  <data name="AddFavoritesSuggestion" xml:space="preserve">
+    <value>可能是校园网连接，前往“网络”为其开启自动登录。</value>
+  </data>
+  <data name="AMinuteAgo" xml:space="preserve">
+    <value>1分钟前</value>
+  </data>
+  <data name="AnHourAgo" xml:space="preserve">
+    <value>1小时前</value>
+  </data>
+  <data name="ButtonDisconnect.Content" xml:space="preserve">
+    <value>断开</value>
+  </data>
+  <data name="ButtonSwitch.Content" xml:space="preserve">
+    <value>切换</value>
+  </data>
+  <data name="CurrentAccountChanged" xml:space="preserve">
+    <value>现在是当前账户。</value>
+  </data>
+  <data name="CurrentAccountRemoved" xml:space="preserve">
+    <value>账户已被移除。</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>天前</value>
+  </data>
+  <data name="Dialog.PrimaryButtonText" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="Dialog.SecondaryButtonText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="HoursAgo" xml:space="preserve">
+    <value>小时前</value>
+  </data>
+  <data name="Manage.Text" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="MinutesAgo" xml:space="preserve">
+    <value>分钟前</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>个月前</value>
+  </data>
+  <data name="OneMonthAgo" xml:space="preserve">
+    <value>1个月前</value>
+  </data>
+  <data name="OneSecondAgo" xml:space="preserve">
+    <value>1秒前</value>
+  </data>
+  <data name="OneYearAgo" xml:space="preserve">
+    <value>1年前</value>
+  </data>
+  <data name="RemoveSuccess" xml:space="preserve">
+    <value>已从收藏中被移除。</value>
+  </data>
+  <data name="SecondsAgo" xml:space="preserve">
+    <value>秒前</value>
+  </data>
+  <data name="SessionDisconnectSuccess" xml:space="preserve">
+    <value>会话已断开。</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>年前</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨天</value>
+  </data>
+</root>

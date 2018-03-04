@@ -229,9 +229,7 @@ namespace CampusNet
 
         public async Task LoginNetworkIfFavoriteAsync(string ssid)
         {
-            if (App.FavoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0 ||
-                ssid == "Tsinghua" ||
-                ssid == "Tsinghua-5G")
+            if (App.FavoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0 || ssid.Contains("Tsinghua"))
             {
                 var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
                 if (response == "Login is successful.")

@@ -162,9 +162,7 @@ namespace CampusNet
                 var ssid = profile.ProfileName;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
 
-                if (ssid == "Tsinghua" ||
-                    ssid == "Tsinghua-5G" ||
-                    _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
+                if (ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
                 {
                     var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
                     if (response == "Login is successful.")

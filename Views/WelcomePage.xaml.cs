@@ -135,7 +135,6 @@ namespace CampusNet
                 });
                 DataStorage.SaveFileAsync("Accounts", App.Accounts);
 
-                await Task.Delay(3000);
                 var rootFrame = Window.Current.Content as Frame;
                 rootFrame.Navigate(typeof(RootPage));
             }

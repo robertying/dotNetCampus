@@ -46,6 +46,9 @@ namespace CampusNet
             toast = new ToastNotification(toastContent.GetXml());
         }
 
+        public string Tag { get => toast.Tag; set => toast.Tag = value; }
+        public string Group { get => toast.Group; set => toast.Group = value; }
+
         public void Show()
         {
             ToastNotificationManager.CreateToastNotifier().Show(toast);

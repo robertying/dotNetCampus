@@ -142,9 +142,12 @@ namespace CampusNet
             BackgroundTaskRegistration registeredTask = null;
 
             builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
+            builder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
+            builder.AddCondition(new SystemCondition(SystemConditionType.UserPresent));
             registeredTask = builder.Register();
 
             builder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+            builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
             registeredTask = builder.Register();
         }
 
@@ -175,6 +178,8 @@ namespace CampusNet
                             var username = status["username"] as string;
 
                             var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance));
+                            toast.Tag = "64";
+                            toast.Group = "Login";
                             toast.Show();
                         }
                     }
@@ -188,6 +193,8 @@ namespace CampusNet
                             var username = status["username"] as string;
 
                             var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance));
+                            toast.Tag = "64";
+                            toast.Group = "Login";
                             toast.Show();
                         }
                     }

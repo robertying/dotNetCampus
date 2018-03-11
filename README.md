@@ -2,6 +2,8 @@
 
 .Net Campus is a Universal Windows Platform app that helps Tsinghua University students better manage their campus network connections and campus accounts.
 
+👉 [Get .Net Campus - Microsoft Store](https://www.microsoft.com/store/productId/9PDVWNT4K1MW)
+
 ## Features
 
 - Network usage and balance detail

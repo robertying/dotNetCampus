@@ -12,21 +12,19 @@
 
     <Grid Background="{StaticResource SystemControlAcrylicWindowMediumHighBrush}">
         <Image
-            x:Name="BackgroundImage"
+            x:Name="OldBackgroundImage"
             Height="350"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Stretch="UniformToFill">
-
-            <interactivity:Interaction.Behaviors>
-                <behaviors:Blur
-                    x:Name="BlurBehavior"
-                    AutomaticallyStart="True"
-                    Delay="0"
-                    Value="20"
-                    Duration="0" />
-            </interactivity:Interaction.Behaviors>
-        </Image>
+            Opacity="100"
+            Stretch="UniformToFill" />
+        <Image
+            x:Name="NewBackgroundImage"
+            Height="350"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Opacity="0"
+            Stretch="UniformToFill" />
 
         <NavigationView
             x:Name="NavView"

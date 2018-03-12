@@ -1,10 +1,12 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Animations;
+﻿using Microsoft.Toolkit.Uwp.UI;
+using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -37,11 +39,23 @@ namespace CampusNet
 
         private async void RootPage_Loaded(object sender, RoutedEventArgs e)
         {
+            var oldImgaeUri = DataStorage.GetSettings("BackgroundImage");
+            if (oldImgaeUri != null)
+            {
+                OldBackgroundImage.Source = await ImageCache.Instance.GetFromCacheAsync(new Uri(oldImgaeUri));
+            }
+
             var imageSource = await AssetsHelper.GetBingWallpaperAsync();
             if (imageSource != null)
             {
-                BackgroundImage.Source = new BitmapImage(imageSource);
-                BackgroundImage.Blur(value: 0, duration: 3500, delay: 0).Start();
+                NewBackgroundImage.Source = new BitmapImage(imageSource);
+                DataStorage.SaveSettings("BackgroundImage", imageSource.OriginalString);
+            }
+
+            if (imageSource != null)
+            {
+                OldBackgroundImage.Fade(0, 3000, 0).Start();
+                NewBackgroundImage.Fade(100, 3000, 0).Start();
             }
         }
 
@@ -50,7 +64,8 @@ namespace CampusNet
             if (e.IsSettingsSelected)
             {
                 ContentFrame.Navigate(typeof(SettingsPage));
-                BackgroundImage.Visibility = Visibility.Collapsed;
+                NewBackgroundImage.Visibility = Visibility.Collapsed;
+                OldBackgroundImage.Visibility = Visibility.Collapsed;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                 NavView.Header = resourceLoader.GetString("Settings");
             }
@@ -62,18 +77,21 @@ namespace CampusNet
                 {
                     case "general":
                         ContentFrame.Navigate(typeof(GeneralPage));
-                        BackgroundImage.Visibility = Visibility.Visible;
+                        NewBackgroundImage.Visibility = Visibility.Visible;
+                        OldBackgroundImage.Visibility = Visibility.Visible;
                         NavView.Header = "";
                         break;
                     case "wifi":
                         ContentFrame.Navigate(typeof(WifiPage));
-                        BackgroundImage.Visibility = Visibility.Collapsed;
+                        NewBackgroundImage.Visibility = Visibility.Collapsed;
+                        OldBackgroundImage.Visibility = Visibility.Collapsed;
                         var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                         NavView.Header = resourceLoader.GetString("Wi-Fi");
                         break;
                     case "account":
                         ContentFrame.Navigate(typeof(AccountPage));
-                        BackgroundImage.Visibility = Visibility.Collapsed;
+                        NewBackgroundImage.Visibility = Visibility.Collapsed;
+                        OldBackgroundImage.Visibility = Visibility.Collapsed;
                         resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                         NavView.Header = resourceLoader.GetString("Account");
                         break;

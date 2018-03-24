@@ -54,8 +54,8 @@ namespace CampusNet
 
             if (imageSource != null)
             {
-                OldBackgroundImage.Fade(0, 3000, 0).Start();
                 NewBackgroundImage.Fade(100, 3000, 0).Start();
+                OldBackgroundImage.Fade(0, 3000, 3000).Start();
             }
         }
 

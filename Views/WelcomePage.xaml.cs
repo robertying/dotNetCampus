@@ -6,6 +6,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -169,6 +171,14 @@ namespace CampusNet
                 UsernameTextBox.IsEnabled = true;
                 PasswordBox.IsEnabled = true;
                 ProgressRing.IsActive = false;
+            }
+        }
+
+        private void PasswordBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter && PasswordBox.Password != null && PasswordBox.Password != "")
+            {
+                LoginButton_Click(null, null);
             }
         }
     }

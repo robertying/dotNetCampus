@@ -27,7 +27,10 @@
                     TextChanged="UsernameTextBox_TextChanged" />
 
                 <TextBlock x:Uid="Password" Margin="0,10,0,5" />
-                <PasswordBox x:Name="PasswordBox" PasswordChanged="PasswordBox_PasswordChanged" />
+                <PasswordBox
+                    x:Name="PasswordBox"
+                    KeyDown="PasswordBox_KeyDown"
+                    PasswordChanged="PasswordBox_PasswordChanged" />
 
                 <StackPanel
                     Margin="0,10,0,0"

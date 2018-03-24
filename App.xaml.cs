@@ -82,6 +82,45 @@ namespace CampusNet
             }
         }
 
+        protected override async void OnActivated(IActivatedEventArgs e)
+        {
+            App.FavoriteNetworks = await DataStorage.GetFileAsync<ObservableCollection<Network>>("Networks");
+            App.Accounts = await DataStorage.GetFileAsync<ObservableCollection<Account>>("Accounts");
+            if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
+            if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
+
+            Frame rootFrame = Window.Current.Content as Frame;
+
+            if (rootFrame == null)
+            {
+                rootFrame = new Frame();
+                rootFrame.NavigationFailed += OnNavigationFailed;
+
+                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                {
+
+                }
+
+                Window.Current.Content = rootFrame;
+            }
+
+            if (rootFrame.Content == null)
+            {
+                if (Accounts.Count() == 0)
+                {
+                    rootFrame.Navigate(typeof(WelcomePage));
+                }
+                else
+                {
+                    rootFrame.Navigate(typeof(RootPage));
+                }
+            }
+
+            Window.Current.Activate();
+
+            ExtendAcrylicIntoTitleBar();
+        }
+
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             base.OnBackgroundActivated(args);
@@ -127,11 +166,7 @@ namespace CampusNet
             {
                 await BackgroundExecutionManager.RequestAccessAsync();
             }
-            else if (oldVersion == newVersion)
-            {
-                return;
-            }
-            else
+            else if (oldVersion != newVersion)
             {
                 BackgroundExecutionManager.RemoveAccess();
                 await BackgroundExecutionManager.RequestAccessAsync();

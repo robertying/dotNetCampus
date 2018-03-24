@@ -196,6 +196,7 @@
     <Content Include="Assets\Wide\Wide310x150Logo.scale-400.png" />
     <None Include="dotNetCampus_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
+    <None Include="Package.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

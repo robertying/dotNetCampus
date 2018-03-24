@@ -116,7 +116,7 @@ namespace CampusNet
         {
             try
             {
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://www.baidu.com");
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://net.tsinghua.edu.cn");
                 request.AllowAutoRedirect = false;
                 request.Method = "HEAD";
                 request.Timeout = 100;

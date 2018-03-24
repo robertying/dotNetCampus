@@ -30,8 +30,6 @@ namespace CampusNet
     public sealed partial class GeneralPage : Page
     {
         private List<UsageWithDate> detailUsage;
-        private WiFiAdapter wifiAdapter;
-        private string savedProfileName = null;
         private Network connectedNetwork;
         private Account currentAccount;
         private bool isOnline = false;
@@ -53,7 +51,7 @@ namespace CampusNet
             base.OnNavigatedTo(e);
 
             /// Network
-            await GetCurrentNetworkAsync();
+            GetCurrentNetwork();
 
             /// Account
             currentAccount = App.Accounts.First();
@@ -92,7 +90,6 @@ namespace CampusNet
 
         private async Task GetConnectionStatusAsync()
         {
-            if (ConnectionStatus == null) ConnectionStatus = new Status();
             if (isOnline)
             {
                 var status = await NetHelper.GetStatusAsync();
@@ -108,52 +105,21 @@ namespace CampusNet
             }
         }
 
-        private async Task UpdateConnectivityStatusAsync()
+        private void GetCurrentNetwork()
         {
-            var connectedProfile = await wifiAdapter.NetworkAdapter.GetConnectedProfileAsync();
+            var connectedProfile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
             if (connectedProfile != null)
             {
                 connectedNetwork = new Network
                 {
                     Ssid = connectedProfile.ProfileName
                 };
-            }
-
-            if (connectedProfile != null && connectedNetwork.Ssid != savedProfileName)
-            {
-                savedProfileName = connectedNetwork.Ssid;
-                isOnline = false;
-                NetworkButton.Content = connectedNetwork.Ssid;
-            }
-            else if (connectedProfile == null && savedProfileName != null)
-            {
-                savedProfileName = null;
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                NetworkButton.Content = resourceLoader.GetString("Disconnected");
-            }
-        }
-
-        private async Task GetCurrentNetworkAsync()
-        {
-            var access = await WiFiAdapter.RequestAccessAsync();
-            if (access != WiFiAccessStatus.Allowed)
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                NetworkButton.Content = resourceLoader.GetString("Disconnected");
+                ConnectionStatus.Network = connectedNetwork.Ssid;
             }
             else
             {
-                var result = await Windows.Devices.Enumeration.DeviceInformation.FindAllAsync(WiFiAdapter.GetDeviceSelector());
-                if (result.Count >= 1)
-                {
-                    wifiAdapter = await WiFiAdapter.FromIdAsync(result[0].Id);
-                    await UpdateConnectivityStatusAsync();
-                }
-                else
-                {
-                    var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                    NetworkButton.Content = resourceLoader.GetString("Disconnected");
-                }
+                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                NetworkButton.Content = resourceLoader.GetString("Disconnected");
             }
         }
 

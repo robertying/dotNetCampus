@@ -24,8 +24,6 @@ namespace CampusNet
 {
     public sealed partial class WifiPage : Page
     {
-        private WiFiAdapter wifiAdapter;
-        private string savedProfileName = null;
         private Network connectedNetwork;
 
         public ObservableCollection<Network> FavoriteNetworks
@@ -37,64 +35,33 @@ namespace CampusNet
         public WifiPage()
         {
             this.InitializeComponent();
+            DataContext = this;
         }
 
-        private async Task UpdateConnectivityStatusAsync()
+        private void GetCurrentNetwork()
         {
-            var connectedProfile = await wifiAdapter.NetworkAdapter.GetConnectedProfileAsync();
+            var connectedProfile = NetworkInformation.GetInternetConnectionProfile();
             if (connectedProfile != null)
             {
                 connectedNetwork = new Network
                 {
                     Ssid = connectedProfile.ProfileName
                 };
-            }
-            else
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                StatusTextBlock.Text = resourceLoader.GetString("Disconnected");
-            }
-
-            if (connectedProfile != null && connectedNetwork.Ssid != savedProfileName)
-            {
-                savedProfileName = connectedNetwork.Ssid;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                 StatusTextBlock.Text = resourceLoader.GetString("ConnectedTo") + ' ' + connectedNetwork.Ssid;
             }
-            else if (connectedProfile == null && savedProfileName != null)
+            else
             {
-                savedProfileName = null;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                 StatusTextBlock.Text = resourceLoader.GetString("Disconnected");
             }
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-            var access = await WiFiAdapter.RequestAccessAsync();
-            if (access != WiFiAccessStatus.Allowed)
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                StatusTextBlock.Text = resourceLoader.GetString("WiFiAccessDenied");
-            }
-            else
-            {
-                DataContext = this;
-
-                var result = await Windows.Devices.Enumeration.DeviceInformation.FindAllAsync(WiFiAdapter.GetDeviceSelector());
-                if (result.Count >= 1)
-                {
-                    wifiAdapter = await WiFiAdapter.FromIdAsync(result[0].Id);
-                    await UpdateConnectivityStatusAsync();
-                }
-                else
-                {
-                    var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                    StatusTextBlock.Text = resourceLoader.GetString("WiFiAccessDenied");
-                }
-            }
+            GetCurrentNetwork();
         }
 
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
@@ -120,7 +87,7 @@ namespace CampusNet
             }
             else
             {
-                if (FavoriteNetworks.Where(u => u.Ssid == connectedNetwork.Ssid).Count() != 0)
+                if (connectedNetwork.Ssid.Contains("Tsinghua") || FavoriteNetworks.Where(u => u.Ssid == connectedNetwork.Ssid).Count() != 0)
                 {
                     Notification.Show(connectedNetwork.Ssid + ' ' + resourceLoader.GetString("AlreadyFavorite"), 5000);
                 }

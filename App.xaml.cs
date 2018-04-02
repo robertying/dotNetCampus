@@ -173,17 +173,38 @@ namespace CampusNet
             }
 
             var builder = new BackgroundTaskBuilder();
-            builder.Name = "Background Trigger";
             BackgroundTaskRegistration registeredTask = null;
 
-            builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
-            builder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
-            builder.AddCondition(new SystemCondition(SystemConditionType.UserPresent));
-            registeredTask = builder.Register();
+            var isInternetTriggerSet = false;
+            var isSessionTriggerSet = false;
+            foreach (var item in BackgroundTaskRegistration.AllTasks)
+            {
+                if (item.Value.Name == "Internet Trigger")
+                {
+                    isInternetTriggerSet = true;
+                }
+                if (item.Value.Name == "Session Trigger")
+                {
+                    isSessionTriggerSet = true;
+                }
+            }
 
-            builder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
-            builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-            registeredTask = builder.Register();
+            if (!isInternetTriggerSet)
+            {
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
+                builder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
+                builder.AddCondition(new SystemCondition(SystemConditionType.UserPresent));
+                builder.Name = "Internet Trigger";
+                registeredTask = builder.Register();
+            }
+
+            if (!isSessionTriggerSet)
+            {
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                builder.Name = "Session Trigger";
+                registeredTask = builder.Register();
+            }
         }
 
         private async Task Connect()

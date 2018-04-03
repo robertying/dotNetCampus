@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -17,10 +18,18 @@ namespace CampusNet
 {
     public sealed partial class SettingsPage : Page
     {
+        private string version;
+
         public SettingsPage()
         {
             this.InitializeComponent();
+            DataContext = this;
+
+            var packageVersion = Package.Current.Id.Version;
+            Version = String.Format("{0}.{1}.{2}.{3}", packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
         }
+
+        public string Version { get => version; set => version = value; }
 
         private async void GitHubHyperlink_Click(object sender, RoutedEventArgs e)
         {

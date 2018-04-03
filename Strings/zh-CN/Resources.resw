@@ -348,4 +348,30 @@
   <data name="Yesterday" xml:space="preserve">
     <value>昨天</value>
   </data>
+  <data name="Contributing.Text" xml:space="preserve">
+    <value>反馈</value>
+  </data>
+  <data name="Privacy.Text" xml:space="preserve">
+    <value>隐私</value>
+  </data>
+  <data name="PrivacyPolicy.Text" xml:space="preserve">
+    <value>隐私政策</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="WrongPasswordToast" xml:space="preserve">
+    <value>自动登录失败
+账户 {0} 的密码有误
+请输入正确的密码</value>
+  </data>
+  <data name="RoamingToggleSwitch.Header" xml:space="preserve">
+    <value>数据同步</value>
+  </data>
+  <data name="RoamingToggleSwitch.OffContent" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="RoamingToggleSwitch.OnContent" xml:space="preserve">
+    <value>开启</value>
+  </data>
 </root>

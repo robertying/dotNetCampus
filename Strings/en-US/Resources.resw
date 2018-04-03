@@ -348,4 +348,30 @@ Click to choose to remove the network from Favorites</value>
   <data name="Yesterday" xml:space="preserve">
     <value>Yesterday</value>
   </data>
+  <data name="Contributing.Text" xml:space="preserve">
+    <value>Contributing</value>
+  </data>
+  <data name="Privacy.Text" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="PrivacyPolicy.Text" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="Version.Text" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="WrongPasswordToast" xml:space="preserve">
+    <value>Auto-login failed
+Wrong password for {0}
+Please change to the right one</value>
+  </data>
+  <data name="RoamingToggleSwitch.Header" xml:space="preserve">
+    <value>Data roaming</value>
+  </data>
+  <data name="RoamingToggleSwitch.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="RoamingToggleSwitch.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
 </root>

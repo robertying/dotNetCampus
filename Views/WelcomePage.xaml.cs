@@ -105,7 +105,7 @@ namespace CampusNet
 
             if (username == "10582RobertYing..NetCampus" && password == Utility.ComputeMD5("10582RobertYing..NetCampus"))
             {
-                App.Accounts.Add(new Account
+                App.Accounts.Insert(0, new Account
                 {
                     Username = username,
                     Password = password
@@ -124,7 +124,7 @@ namespace CampusNet
 
             if (response == "Login is successful.")
             {
-                App.Accounts.Add(new Account
+                App.Accounts.Insert(0, new Account
                 {
                     Username = username,
                     Password = password

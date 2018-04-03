@@ -24,10 +24,12 @@ namespace CampusNet
 
         private async void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            CurrentAccount = Accounts.First();
+            CurrentAccount = Accounts.FirstOrDefault();
+            if (CurrentAccount == null) CurrentAccount = new Account();
+
             await GetAllAccountsInfo();
 
-            CurrentUsernameTextBlock.Text = CurrentAccount.Username;
+            CurrentUsernameTextBlock.Text = CurrentAccount.Username ?? "";
             CurrentUsageTextBlock.Text = CurrentAccount.Usage ?? "";
             CurrentBalanceTextBlock.Text = CurrentAccount.Balance ?? "";
 
@@ -53,7 +55,7 @@ namespace CampusNet
         {
             base.OnNavigatedTo(e);
 
-            CurrentAccount = Accounts.First();
+            CurrentAccount = Accounts.FirstOrDefault();
             await GetAllAccountsInfo();
 
             if (CurrentAccount.Sessions != null)

@@ -38,7 +38,7 @@ namespace CampusNet
             GetCurrentNetwork();
 
             /// Account
-            currentAccount = App.Accounts.First();
+            currentAccount = App.Accounts.FirstOrDefault();
 
             if (connectedNetwork != null)
             {
@@ -166,6 +166,16 @@ namespace CampusNet
                         LoginButton.Content = resourceLoader.GetString("Online");
                     }
                 }
+                else if (response == "E2553: Password is error.")
+                {
+                    App.Accounts.RemoveAt(0);
+                    var localHelper = new LocalObjectStorageHelper();
+                    await localHelper.SaveFileAsync("Accounts", App.Accounts);
+
+                    var rootFrame = Window.Current.Content as Frame;
+                    rootFrame.Navigate(typeof(WelcomePage));
+                }
+
                 ProgressRing.IsActive = false;
             }
             else
@@ -233,7 +243,15 @@ namespace CampusNet
                         LoginButton.Content = resourceLoader.GetString("Online");
                     }
                 }
+                else if (response == "E2553: Password is error.")
+                {
+                    App.Accounts.RemoveAt(0);
+                    var localHelper = new LocalObjectStorageHelper();
+                    await localHelper.SaveFileAsync("Accounts", App.Accounts);
 
+                    var rootFrame = Window.Current.Content as Frame;
+                    rootFrame.Navigate(typeof(WelcomePage));
+                }
             }
             else
             {

@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
-using Windows.Devices.WiFi;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace CampusNet
@@ -42,10 +32,13 @@ namespace CampusNet
 
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-            App.FavoriteNetworks = await DataStorage.GetFileAsync<ObservableCollection<Network>>("Networks");
-            App.Accounts = await DataStorage.GetFileAsync<ObservableCollection<Account>>("Accounts");
+            var localHelper = new LocalObjectStorageHelper();
+            App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+            App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
             if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
+
+            FetchRoamingDataAsync();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -84,10 +77,13 @@ namespace CampusNet
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
-            App.FavoriteNetworks = await DataStorage.GetFileAsync<ObservableCollection<Network>>("Networks");
-            App.Accounts = await DataStorage.GetFileAsync<ObservableCollection<Account>>("Accounts");
+            var localHelper = new LocalObjectStorageHelper();
+            App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+            App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
             if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
+
+            FetchRoamingDataAsync();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -147,6 +143,33 @@ namespace CampusNet
             deferral.Complete();
         }
 
+        private async void FetchRoamingDataAsync()
+        {
+            var roamingHelper = new RoamingObjectStorageHelper();
+            var localHelper = new LocalObjectStorageHelper();
+            bool isRoamingEnabled;
+
+            if (roamingHelper.KeyExists("Roaming"))
+            {
+                isRoamingEnabled = roamingHelper.Read<bool>("Roaming");
+                localHelper.Save("Roaming", isRoamingEnabled);
+
+                if (isRoamingEnabled)
+                {
+                    if (await roamingHelper.FileExistsAsync("Accounts"))
+                    {
+                        App.Accounts = await roamingHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+                        await localHelper.SaveFileAsync("Accounts", App.Accounts);
+                    }
+                    if (await roamingHelper.FileExistsAsync("Networks"))
+                    {
+                        App.FavoriteNetworks = await roamingHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+                        await localHelper.SaveFileAsync("Networks", App.FavoriteNetworks);
+                    }
+                }
+            }
+        }
+
         private void ExtendAcrylicIntoTitleBar()
         {
             CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
@@ -157,10 +180,11 @@ namespace CampusNet
 
         private async void SetBackgroundTask()
         {
-            var oldVersion = DataStorage.GetSettings("version");
+            var localHelper = new LocalObjectStorageHelper();
+            var oldVersion = localHelper.Read<string>("Version");
             var packageVersion = Package.Current.Id.Version;
             var newVersion = String.Format("{0}.{1}.{2}.{3}", packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
-            DataStorage.SaveSettings("version", newVersion);
+            localHelper.Save("Version", newVersion);
 
             if (oldVersion == null)
             {
@@ -209,8 +233,9 @@ namespace CampusNet
 
         private async Task Connect()
         {
-            var _accounts = await DataStorage.GetFileAsync<ObservableCollection<Account>>("Accounts");
-            var _favoriteNetworks = await DataStorage.GetFileAsync<ObservableCollection<Network>>("Networks");
+            var localHelper = new LocalObjectStorageHelper();
+            var _accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+            var _favoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             if (_accounts == null) _accounts = new ObservableCollection<Account>();
             if (_favoriteNetworks == null) _favoriteNetworks = new ObservableCollection<Network>();
             var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
@@ -253,6 +278,13 @@ namespace CampusNet
                             toast.Group = "Login";
                             toast.Show();
                         }
+                    }
+                    else if (response == "E2553: Password is error.")
+                    {
+                        var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("WrongPasswordToast"), currentAccount.Username));
+                        toast.Tag = "64";
+                        toast.Group = "Login";
+                        toast.Show();
                     }
                 }
             }

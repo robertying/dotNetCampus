@@ -28,8 +28,21 @@
 
         <NavigationView
             x:Name="NavView"
-            Header="CampusNet"
+            ExpandedModeThresholdWidth="900"
+            Header=" "
+            OpenPaneLength="280"
             SelectionChanged="NavView_SelectionChanged">
+            <NavigationView.HeaderTemplate>
+                <DataTemplate x:DataType="TextBlock">
+                    <Grid Margin="12,36,0,20">
+                        <TextBlock
+                            x:Name="HeaderTextBlock"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </NavigationView.HeaderTemplate>
             <NavigationView.MenuItems>
                 <NavigationViewItem
                     x:Uid="NavViewItemGeneral"
@@ -61,6 +74,7 @@
             Margin="12,8"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
+            IsHitTestVisible="false"
             Style="{StaticResource CaptionTextBlockStyle}" />
     </Grid>
 </Page>

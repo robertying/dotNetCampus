@@ -564,7 +564,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Margin="25,0,25,0" Background="Transparent">
+    <Grid Margin="50,-30,50,0" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -705,7 +705,7 @@
         <charting:Chart
             x:Name="DetailUsageChart"
             Grid.Row="1"
-            Margin="0,15,0,0">
+            Margin="0,40,0,0">
             <charting:LineSeries
                 AnimationSequence="FirstToLast"
                 DependentValueBinding="{Binding Usage}"

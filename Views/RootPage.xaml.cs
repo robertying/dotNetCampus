@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.UI;
 using Microsoft.Toolkit.Uwp.UI.Animations;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,7 +32,6 @@ namespace CampusNet
 
             string appName = Windows.ApplicationModel.Package.Current.DisplayName;
             AppTitle.Text = appName;
-            NavView.Header = "";
 
             this.Loaded += RootPage_Loaded;
             ContentFrame.Navigate(typeof(GeneralPage));
@@ -79,7 +79,7 @@ namespace CampusNet
                         ContentFrame.Navigate(typeof(GeneralPage));
                         NewBackgroundImage.Visibility = Visibility.Visible;
                         OldBackgroundImage.Visibility = Visibility.Visible;
-                        NavView.Header = "";
+                        NavView.Header = " ";
                         break;
                     case "wifi":
                         ContentFrame.Navigate(typeof(WifiPage));

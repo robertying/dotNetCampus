@@ -1,29 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
-using Microsoft.Toolkit.Uwp.UI;
-using Microsoft.Toolkit.Uwp.UI.Extensions;
-using Windows.Devices.WiFi;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI;
-using Microsoft.Toolkit.Uwp.UI.Animations.Behaviors;
-using Microsoft.Xaml.Interactivity;
-using Microsoft.Toolkit.Uwp.UI.Animations;
+using Microsoft.Toolkit.Uwp.Helpers;
 
 namespace CampusNet
 {
@@ -69,7 +53,8 @@ namespace CampusNet
                 }
 
                 /// Load from the local storage.
-                var status = await DataStorage.GetFileAsync<Status>("ConnectionStatus");
+                var localHelper = new LocalObjectStorageHelper();
+                var status = await localHelper.ReadFileAsync<Status>("ConnectionStatus");
                 if (status != null)
                 {
                     ConnectionStatus.Usage = status.Usage;
@@ -77,7 +62,7 @@ namespace CampusNet
                     ConnectionStatus.Username = status.Username;
                     ConnectionStatus.Session = status.Session;
                 }
-                DetailUsage = await DataStorage.GetFileAsync<List<UsageWithDate>>("DetailUsage");
+                DetailUsage = await localHelper.ReadFileAsync<List<UsageWithDate>>("DetailUsage");
 
                 /// Login
                 await LoginNetworkIfFavoriteAsync(connectedNetwork.Ssid);
@@ -100,7 +85,9 @@ namespace CampusNet
                     ConnectionStatus.Username = status["username"] as string;
                     var sessionNumber = await UseregHelper.GetSessionNumberAsync(currentAccount.Username, currentAccount.Password);
                     ConnectionStatus.Session = sessionNumber == -1 ? "--" : sessionNumber.ToString();
-                    DataStorage.SaveFileAsync("ConnectionStatus", ConnectionStatus);
+
+                    var localHelper = new LocalObjectStorageHelper();
+                    await localHelper.SaveFileAsync("ConnectionStatus", ConnectionStatus);
                 }
             }
         }
@@ -262,7 +249,8 @@ namespace CampusNet
 
                 if (DetailUsage != null)
                 {
-                    DataStorage.SaveFileAsync("DetailUsage", DetailUsage);
+                    var localHelper = new LocalObjectStorageHelper();
+                    await localHelper.SaveFileAsync("DetailUsage", DetailUsage);
 
                     (DetailUsageChart.Series[0] as LineSeries).ItemsSource = DetailUsage;
                     SetChartAxis();

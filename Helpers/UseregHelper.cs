@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -39,7 +37,6 @@ namespace CampusNet
 
         public static async Task<string> LoginAsync(string username, string password)
         {
-            password = Utility.ComputeMD5(password);
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
 
             Dictionary<string, string> form = new Dictionary<string, string>
@@ -119,7 +116,6 @@ namespace CampusNet
                     httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
                     httpResponse.EnsureSuccessStatusCode();
                     httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                    //Debug.WriteLine("UseregHelper.GetSessionNumberAsync(): " + httpResponseBody);
 
                     HtmlDocument htmlDocument = new HtmlDocument();
                     htmlDocument.LoadHtml(httpResponseBody);
@@ -155,12 +151,10 @@ namespace CampusNet
                     httpResponse = await httpClient.GetAsync(new Uri(INFO_URL));
                     httpResponse.EnsureSuccessStatusCode();
                     infoPage = await httpResponse.Content.ReadAsStringAsync();
-                    //Debug.WriteLine("UseregHelper.GetInfo(): (INFO_URL) " + infoPage);
 
                     httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
                     httpResponse.EnsureSuccessStatusCode();
                     sessionPage = await httpResponse.Content.ReadAsStringAsync();
-                    //Debug.WriteLine("UseregHelper.GetInfo(): (SESSION_URL) " + sessionPage);
 
                     return ParsePages(infoPage, sessionPage);
                 }
@@ -260,7 +254,6 @@ namespace CampusNet
                     httpResponse = await httpClient.GetAsync(new Uri(DETAIL_URL + queryString));
                     httpResponse.EnsureSuccessStatusCode();
                     httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                    //Debug.WriteLine("UseregHelper.GetDetailUsageForChart(): " + httpResponseBody);
 
                     HtmlDocument detailHTML = new HtmlDocument();
                     detailHTML.LoadHtml(httpResponseBody);

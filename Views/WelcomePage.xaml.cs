@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using System;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 namespace CampusNet
 {
@@ -118,7 +110,9 @@ namespace CampusNet
                     Username = username,
                     Password = password
                 });
-                DataStorage.SaveFileAsync("Accounts", App.Accounts);
+
+                var localHelper = new LocalObjectStorageHelper();
+                await localHelper.SaveFileAsync("Accounts", App.Accounts);
 
                 await Task.Delay(500);
                 var rootFrame = Window.Current.Content as Frame;
@@ -135,7 +129,9 @@ namespace CampusNet
                     Username = username,
                     Password = password
                 });
-                DataStorage.SaveFileAsync("Accounts", App.Accounts);
+
+                var localHelper = new LocalObjectStorageHelper();
+                await localHelper.SaveFileAsync("Accounts", App.Accounts);
 
                 var rootFrame = Window.Current.Content as Frame;
                 rootFrame.Navigate(typeof(RootPage));

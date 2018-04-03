@@ -1,26 +1,10 @@
-﻿using Microsoft.Toolkit.Uwp.UI;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI;
 using Microsoft.Toolkit.Uwp.UI.Animations;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Background;
-using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 namespace CampusNet
 {
@@ -39,7 +23,8 @@ namespace CampusNet
 
         private async void RootPage_Loaded(object sender, RoutedEventArgs e)
         {
-            var oldImgaeUri = DataStorage.GetSettings("BackgroundImage");
+            var localHelper = new LocalObjectStorageHelper();
+            var oldImgaeUri = localHelper.Read<string>("BackgroundImage");
             if (oldImgaeUri != null)
             {
                 OldBackgroundImage.Source = await ImageCache.Instance.GetFromCacheAsync(new Uri(oldImgaeUri));
@@ -49,7 +34,7 @@ namespace CampusNet
             if (imageSource != null)
             {
                 NewBackgroundImage.Source = new BitmapImage(imageSource);
-                DataStorage.SaveSettings("BackgroundImage", imageSource.OriginalString);
+                localHelper.Save("BackgroundImage", imageSource.OriginalString);
             }
 
             if (imageSource != null)

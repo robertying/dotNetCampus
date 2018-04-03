@@ -1,13 +1,8 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Security.Cryptography.Certificates;
-using Windows.Web.Http.Filters;
 
 namespace CampusNet
 {
@@ -21,7 +16,6 @@ namespace CampusNet
 
         public static async Task<string> LoginAsync(string username, string password)
         {
-            password = Utility.ComputeMD5(password);
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
 
             string queryString = LOGIN_URL + "?action=login&username=" + username + "&password={MD5_HEX}" + password + "&ac_id=1";

@@ -1,23 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Toolkit.Uwp.Helpers;
+using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Devices.WiFi;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Networking.Connectivity;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace CampusNet
@@ -78,7 +65,7 @@ namespace CampusNet
             }
         }
 
-        private void AddFavoritesButton_Click(object sender, RoutedEventArgs e)
+        private async void AddFavoritesButton_Click(object sender, RoutedEventArgs e)
         {
             var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
             if (connectedNetwork == null)
@@ -94,7 +81,10 @@ namespace CampusNet
                 else
                 {
                     FavoriteNetworks.Add(connectedNetwork);
-                    DataStorage.SaveFileAsync("Networks", FavoriteNetworks);
+
+                    var localHelper = new LocalObjectStorageHelper();
+                    await localHelper.SaveFileAsync("Networks", FavoriteNetworks);
+
                     Notification.Show(connectedNetwork.Ssid + ' ' + resourceLoader.GetString("AddedToFavorites"), 5000);
                 }
             }
@@ -154,7 +144,9 @@ namespace CampusNet
                 String ssid = (sender as Button).Tag as String;
                 var index = (FavoriteNetworks.Where(u => u.Ssid == ssid).ToList())[0];
                 FavoriteNetworks.Remove(index);
-                DataStorage.SaveFileAsync("Networks", FavoriteNetworks);
+
+                var localHelper = new LocalObjectStorageHelper();
+                await localHelper.SaveFileAsync("Networks", FavoriteNetworks);
 
                 Notification.Show(ssid + ' ' + resourceLoader.GetString("RemoveSuccess"), 5000);
             }

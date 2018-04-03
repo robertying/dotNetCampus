@@ -9,6 +9,7 @@
 
     <Grid Background="Transparent">
         <StackPanel>
+            <ToggleSwitch x:Uid="RoamingToggleSwitch" Toggled="RoamingToggleSwitch_Toggled" />
             <TextBlock
                 x:Uid="Privacy"
                 Margin="12,0,0,0"

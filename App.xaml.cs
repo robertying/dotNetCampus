@@ -136,10 +136,10 @@ namespace CampusNet
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-
+            await SaveRoamingDataAsync();
             deferral.Complete();
         }
 
@@ -167,6 +167,20 @@ namespace CampusNet
                         await localHelper.SaveFileAsync("Networks", App.FavoriteNetworks);
                     }
                 }
+            }
+        }
+
+        private async Task SaveRoamingDataAsync()
+        {
+            var roamingHelper = new RoamingObjectStorageHelper();
+            var localHelper = new LocalObjectStorageHelper();
+            bool isRoamingEnabled = localHelper.Read<bool>("Roaming");
+
+            if (isRoamingEnabled)
+            {
+                roamingHelper.Save("Roaming", isRoamingEnabled);
+                await roamingHelper.SaveFileAsync("Accounts", App.Accounts);
+                await roamingHelper.SaveFileAsync("Networks", App.FavoriteNetworks);
             }
         }
 

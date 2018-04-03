@@ -9,6 +9,7 @@ namespace CampusNet
     public sealed partial class SettingsPage : Page
     {
         private string version;
+        private bool isRoamingEnabled;
 
         public SettingsPage()
         {
@@ -17,9 +18,13 @@ namespace CampusNet
 
             var packageVersion = Package.Current.Id.Version;
             Version = String.Format("{0}.{1}.{2}.{3}", packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
+
+            var localHelper = new LocalObjectStorageHelper();
+            IsRoamingEnabled = localHelper.Read<bool>("Roaming");
         }
 
         public string Version { get => version; set => version = value; }
+        public bool IsRoamingEnabled { get => isRoamingEnabled; set => isRoamingEnabled = value; }
 
         private async void GitHubHyperlink_Click(object sender, RoutedEventArgs e)
         {

@@ -54,7 +54,13 @@ namespace CampusNet
 
                 /// Load from the local storage.
                 var localHelper = new LocalObjectStorageHelper();
-                var status = await localHelper.ReadFileAsync<Status>("ConnectionStatus");
+                Status status = null;
+
+                if (await localHelper.FileExistsAsync("ConnectionStatus"))
+                {
+                    status = await localHelper.ReadFileAsync<Status>("ConnectionStatus");
+                }
+
                 if (status != null)
                 {
                     ConnectionStatus.Usage = status.Usage;
@@ -62,7 +68,10 @@ namespace CampusNet
                     ConnectionStatus.Username = status.Username;
                     ConnectionStatus.Session = status.Session;
                 }
-                DetailUsage = await localHelper.ReadFileAsync<List<UsageWithDate>>("DetailUsage");
+                if (await localHelper.FileExistsAsync("DetailUsage"))
+                {
+                    DetailUsage = await localHelper.ReadFileAsync<List<UsageWithDate>>("DetailUsage");
+                }
 
                 /// Login
                 await LoginNetworkIfFavoriteAsync(connectedNetwork.Ssid);

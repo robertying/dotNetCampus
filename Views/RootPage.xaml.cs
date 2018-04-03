@@ -24,7 +24,13 @@ namespace CampusNet
         private async void RootPage_Loaded(object sender, RoutedEventArgs e)
         {
             var localHelper = new LocalObjectStorageHelper();
-            var oldImgaeUri = localHelper.Read<string>("BackgroundImage");
+            string oldImgaeUri = null;
+
+            if (localHelper.KeyExists("BackgroundImage"))
+            {
+                oldImgaeUri = localHelper.Read<string>("BackgroundImage");
+            }
+
             if (oldImgaeUri != null)
             {
                 OldBackgroundImage.Source = await ImageCache.Instance.GetFromCacheAsync(new Uri(oldImgaeUri));

@@ -101,9 +101,9 @@ namespace CampusNet
             ProgressRing.IsActive = true;
 
             var username = UsernameTextBox.Text;
-            var password = PasswordBox.Password;
+            var password = Utility.ComputeMD5(PasswordBox.Password);
 
-            if (username == "10582RobertYing..NetCampus" && password == "10582RobertYing..NetCampus")
+            if (username == "10582RobertYing..NetCampus" && password == Utility.ComputeMD5("10582RobertYing..NetCampus"))
             {
                 App.Accounts.Add(new Account
                 {

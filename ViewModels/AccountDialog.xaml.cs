@@ -23,7 +23,7 @@ namespace CampusNet
         {
             AccountDialog accountDialog = sender as AccountDialog;
             var username = accountDialog.UsernameTextBox.Text;
-            var password = accountDialog.PasswordBox.Password;
+            var password = Utility.ComputeMD5(accountDialog.PasswordBox.Password);
 
             Account newAccount = new Account
             {

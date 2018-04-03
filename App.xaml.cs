@@ -33,10 +33,23 @@ namespace CampusNet
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             var localHelper = new LocalObjectStorageHelper();
-            App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
-            App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
-            if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
-            if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
+            if (await localHelper.FileExistsAsync("Networks"))
+            {
+                App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+            }
+            else
+            {
+                App.FavoriteNetworks = new ObservableCollection<Network>();
+            }
+
+            if (await localHelper.FileExistsAsync("Accounts"))
+            {
+                App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+            }
+            else
+            {
+                App.Accounts = new ObservableCollection<Account>();
+            }
 
             FetchRoamingDataAsync();
 
@@ -78,10 +91,23 @@ namespace CampusNet
         protected override async void OnActivated(IActivatedEventArgs e)
         {
             var localHelper = new LocalObjectStorageHelper();
-            App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
-            App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
-            if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
-            if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
+            if (await localHelper.FileExistsAsync("Networks"))
+            {
+                App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+            }
+            else
+            {
+                App.FavoriteNetworks = new ObservableCollection<Network>();
+            }
+
+            if (await localHelper.FileExistsAsync("Accounts"))
+            {
+                App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+            }
+            else
+            {
+                App.Accounts = new ObservableCollection<Account>();
+            }
 
             FetchRoamingDataAsync();
 
@@ -174,7 +200,12 @@ namespace CampusNet
         {
             var roamingHelper = new RoamingObjectStorageHelper();
             var localHelper = new LocalObjectStorageHelper();
-            bool isRoamingEnabled = localHelper.Read<bool>("Roaming");
+            bool isRoamingEnabled = false;
+
+            if (localHelper.KeyExists("Roaming"))
+            {
+                isRoamingEnabled = localHelper.Read<bool>("Roaming");
+            }
 
             if (isRoamingEnabled)
             {
@@ -248,8 +279,18 @@ namespace CampusNet
         private async Task Connect()
         {
             var localHelper = new LocalObjectStorageHelper();
-            var _accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
-            var _favoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+            ObservableCollection<Network> _favoriteNetworks = null;
+            ObservableCollection<Account> _accounts = null;
+
+            if (await localHelper.FileExistsAsync("Accounts"))
+            {
+                _accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+            }
+            if (await localHelper.FileExistsAsync("Networks"))
+            {
+                _favoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+            }
+
             if (_accounts == null) _accounts = new ObservableCollection<Account>();
             if (_favoriteNetworks == null) _favoriteNetworks = new ObservableCollection<Network>();
             var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();

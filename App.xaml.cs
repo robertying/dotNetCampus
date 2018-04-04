@@ -17,6 +17,7 @@ namespace CampusNet
 {
     sealed partial class App : Application
     {
+        private string lastNetwork = null;
         private static ObservableCollection<Network> favoriteNetworks;
         private static ObservableCollection<Account> accounts;
         public static ObservableCollection<Network> FavoriteNetworks { get => favoriteNetworks; set => favoriteNetworks = value; }
@@ -233,10 +234,20 @@ namespace CampusNet
 
             if (oldVersion == null)
             {
+                foreach (var item in BackgroundTaskRegistration.AllTasks)
+                {
+                    item.Value.Unregister(true);
+                }
+
                 await BackgroundExecutionManager.RequestAccessAsync();
             }
             else if (oldVersion != newVersion)
             {
+                foreach (var item in BackgroundTaskRegistration.AllTasks)
+                {
+                    item.Value.Unregister(true);
+                }
+
                 BackgroundExecutionManager.RemoveAccess();
                 await BackgroundExecutionManager.RequestAccessAsync();
             }
@@ -244,34 +255,20 @@ namespace CampusNet
             var builder = new BackgroundTaskBuilder();
             BackgroundTaskRegistration registeredTask = null;
 
-            var isInternetTriggerSet = false;
-            var isSessionTriggerSet = false;
+            var isNetworkTriggerSet = false;
             foreach (var item in BackgroundTaskRegistration.AllTasks)
             {
-                if (item.Value.Name == "Internet Trigger")
+                if (item.Value.Name == "Network Trigger")
                 {
-                    isInternetTriggerSet = true;
-                }
-                if (item.Value.Name == "Session Trigger")
-                {
-                    isSessionTriggerSet = true;
+                    isNetworkTriggerSet = true;
+                    break;
                 }
             }
 
-            if (!isInternetTriggerSet)
+            if (!isNetworkTriggerSet)
             {
-                builder.SetTrigger(new SystemTrigger(SystemTriggerType.InternetAvailable, false));
-                builder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
-                builder.AddCondition(new SystemCondition(SystemConditionType.UserPresent));
-                builder.Name = "Internet Trigger";
-                registeredTask = builder.Register();
-            }
-
-            if (!isSessionTriggerSet)
-            {
-                builder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
-                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-                builder.Name = "Session Trigger";
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
+                builder.Name = "Network Trigger";
                 registeredTask = builder.Register();
             }
         }
@@ -295,13 +292,13 @@ namespace CampusNet
             if (_favoriteNetworks == null) _favoriteNetworks = new ObservableCollection<Network>();
             var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
 
-            if (_accounts.Count() > 0)
+            if (profile != null && _accounts.Count() > 0)
             {
                 var currentAccount = _accounts.First();
                 var ssid = profile.ProfileName;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
 
-                if (ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
+                if (ssid != lastNetwork && ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
                 {
                     var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
                     if (response == "Login is successful.")
@@ -342,6 +339,15 @@ namespace CampusNet
                         toast.Show();
                     }
                 }
+            }
+
+            if (profile != null)
+            {
+                lastNetwork = profile.ProfileName;
+            }
+            else
+            {
+                lastNetwork = null;
             }
         }
     }

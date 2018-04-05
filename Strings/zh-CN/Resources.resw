@@ -134,8 +134,9 @@
   </data>
   <data name="Auto-loginToast" xml:space="preserve">
     <value>已成功登录账户 {0}
-流量：{1}
-余额：{2}</value>
+流量: {1}
+余额: {2}
+网络: {3}</value>
   </data>
   <data name="Auto-loginDescription.Text" xml:space="preserve">
     <value>自动登录只对收藏的网络以及 Tsinghua 和 Tsinghua-5G 启用

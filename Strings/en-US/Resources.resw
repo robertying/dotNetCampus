@@ -135,7 +135,8 @@
   <data name="Auto-loginToast" xml:space="preserve">
     <value>Auto-login {0} successfully
 Usage: {1}
-Balance: {2}</value>
+Balance: {2}
+Network: {3}</value>
   </data>
   <data name="Auto-loginDescription.Text" xml:space="preserve">
     <value>Auto-login is enabled only for Favorite networks, including Tsinghua and Tsinghua-5G

@@ -141,7 +141,7 @@ namespace CampusNet
                 await NetHelper.LogoutAsync();
                 LoginButton_Click(null, null);
             }
-            else if (response == "E2532: The two authentication interval cannot be less than 3 seconds.")
+            else if (response == "E2532: The two authentication interval cannot be less than 3 seconds." || response == "E2532: The two authentication interval cannot be less than 10 seconds.")
             {
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                 StatusTextBlock.Text = resourceLoader.GetString("FrequentLogin");

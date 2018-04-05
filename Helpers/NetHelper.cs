@@ -87,6 +87,8 @@ namespace CampusNet
                 Debug.WriteLine("NetHelper.GetStatusAsync(): " + httpResponseBody);
 
                 var info_strs = httpResponseBody.Split(',');
+                if (info_strs == null) return null;
+
                 Dictionary<string, object> info = new Dictionary<string, object>
                 {
                     ["username"] = info_strs[0],

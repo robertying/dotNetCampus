@@ -2,6 +2,7 @@
 using Microsoft.Toolkit.Uwp.UI;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -46,7 +47,8 @@ namespace CampusNet
             if (imageSource != null)
             {
                 NewBackgroundImage.Fade(100, 3000, 0).Start();
-                OldBackgroundImage.Fade(0, 3000, 3000).Start();
+                await Task.Delay(3000);
+                OldBackgroundImage.Visibility = Visibility.Collapsed;
             }
         }
 

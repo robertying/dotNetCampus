@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using Windows.UI.Notifications;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,7 +18,6 @@ namespace CampusNet
 {
     sealed partial class App : Application
     {
-        private string lastNetwork = null;
         private static ObservableCollection<Network> favoriteNetworks;
         private static ObservableCollection<Account> accounts;
         public static ObservableCollection<Network> FavoriteNetworks { get => favoriteNetworks; set => favoriteNetworks = value; }
@@ -256,12 +256,16 @@ namespace CampusNet
             BackgroundTaskRegistration registeredTask = null;
 
             var isNetworkTriggerSet = false;
+            var isSessionTriggerSet = false;
             foreach (var item in BackgroundTaskRegistration.AllTasks)
             {
                 if (item.Value.Name == "Network Trigger")
                 {
                     isNetworkTriggerSet = true;
-                    break;
+                }
+                if (item.Value.Name == "Session Trigger")
+                {
+                    isSessionTriggerSet = true;
                 }
             }
 
@@ -269,6 +273,12 @@ namespace CampusNet
             {
                 builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
                 builder.Name = "Network Trigger";
+                registeredTask = builder.Register();
+            }
+            if (!isSessionTriggerSet)
+            {
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+                builder.Name = "Session Trigger";
                 registeredTask = builder.Register();
             }
         }
@@ -298,7 +308,7 @@ namespace CampusNet
                 var ssid = profile.ProfileName;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
 
-                if (ssid != lastNetwork && ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
+                if (ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
                 {
                     var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
                     if (response == "Login is successful.")
@@ -306,26 +316,64 @@ namespace CampusNet
                         var status = await NetHelper.GetStatusAsync();
                         if (status != null)
                         {
+                            var lastToast = ToastNotificationManager.History.GetHistory().FirstOrDefault();
+                            if (lastToast != null)
+                            {
+                                var expirationTime = lastToast.ExpirationTime ?? DateTimeOffset.MinValue;
+                                var lastProfileName = lastToast.Content.InnerText.Split("\n").Last();
+                                var now = DateTimeOffset.Now.AddDays(3);
+                                var timeDiff = now.Subtract(expirationTime);
+                                var lastSsid = lastProfileName.Substring(lastProfileName.LastIndexOf(' ') + 1);
+
+                                if (lastProfileName == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                                else if (lastSsid == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                            }
+
                             var usage = Utility.GetUsageDescription((long)status["total_usage"]);
                             var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
                             var username = status["username"] as string;
 
-                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance));
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid));
                             toast.Tag = "64";
                             toast.Group = "Login";
                             toast.Show();
                         }
                     }
-                    else if (response == "IP has been online, please logout.")
+                    else if (response == "E2620: You are already online." || response == "IP has been online, please logout.")
                     {
                         var status = await NetHelper.GetStatusAsync();
                         if (status != null)
                         {
+                            var lastToast = ToastNotificationManager.History.GetHistory().FirstOrDefault();
+                            if (lastToast != null)
+                            {
+                                var expirationTime = lastToast.ExpirationTime ?? DateTimeOffset.MinValue;
+                                var lastProfileName = lastToast.Content.InnerText.Split("\n").Last();
+                                var now = DateTimeOffset.Now.AddDays(3);
+                                var timeDiff = now.Subtract(expirationTime);
+                                var lastSsid = lastProfileName.Substring(lastProfileName.LastIndexOf(' ') + 1);
+
+                                if (lastProfileName == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                                else if (lastSsid == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                            }
+
                             var usage = Utility.GetUsageDescription((long)status["total_usage"]);
                             var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
                             var username = status["username"] as string;
 
-                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance));
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid));
                             toast.Tag = "64";
                             toast.Group = "Login";
                             toast.Show();
@@ -333,6 +381,25 @@ namespace CampusNet
                     }
                     else if (response == "E2553: Password is error.")
                     {
+                        var lastToast = ToastNotificationManager.History.GetHistory().FirstOrDefault();
+                        if (lastToast != null)
+                        {
+                            var expirationTime = lastToast.ExpirationTime ?? DateTimeOffset.MinValue;
+                            var lastProfileName = lastToast.Content.InnerText.Split("\n").Last();
+                            var now = DateTimeOffset.Now.AddDays(3);
+                            var timeDiff = now.Subtract(expirationTime);
+                            var lastSsid = lastProfileName.Substring(lastProfileName.LastIndexOf(' ') + 1);
+
+                            if (lastProfileName == ssid && timeDiff.Minutes < 1)
+                            {
+                                return;
+                            }
+                            else if (lastSsid == ssid && timeDiff.Minutes < 1)
+                            {
+                                return;
+                            }
+                        }
+
                         var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("WrongPasswordToast"), currentAccount.Username));
                         toast.Tag = "64";
                         toast.Group = "Login";
@@ -340,14 +407,9 @@ namespace CampusNet
                     }
                 }
             }
-
-            if (profile != null)
-            {
-                lastNetwork = profile.ProfileName;
-            }
             else
             {
-                lastNetwork = null;
+                ToastNotificationManager.History.Clear();
             }
         }
     }

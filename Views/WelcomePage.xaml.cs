@@ -136,7 +136,7 @@ namespace CampusNet
                 var rootFrame = Window.Current.Content as Frame;
                 rootFrame.Navigate(typeof(RootPage));
             }
-            else if (response == "IP has been online, please logout.")
+            else if (response == "IP has been online, please logout." || response == "E2620: You are already online.")
             {
                 await NetHelper.LogoutAsync();
                 LoginButton_Click(null, null);

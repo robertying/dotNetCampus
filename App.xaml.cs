@@ -26,7 +26,6 @@ namespace CampusNet
         public App()
         {
             this.InitializeComponent();
-            this.Suspending += OnSuspending;
 
             SetBackgroundTask();
         }
@@ -34,25 +33,22 @@ namespace CampusNet
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             var localHelper = new LocalObjectStorageHelper();
+            App.FavoriteNetworks = new ObservableCollection<Network>();
+            App.Accounts = new ObservableCollection<Account>();
+
             if (await localHelper.FileExistsAsync("Networks"))
             {
                 App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             }
-            else
-            {
-                App.FavoriteNetworks = new ObservableCollection<Network>();
-            }
+
+            if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
 
             if (await localHelper.FileExistsAsync("Accounts"))
             {
                 App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             }
-            else
-            {
-                App.Accounts = new ObservableCollection<Account>();
-            }
 
-            FetchRoamingDataAsync();
+            if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -96,21 +92,15 @@ namespace CampusNet
             {
                 App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             }
-            else
-            {
-                App.FavoriteNetworks = new ObservableCollection<Network>();
-            }
+
+            if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
 
             if (await localHelper.FileExistsAsync("Accounts"))
             {
                 App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             }
-            else
-            {
-                App.Accounts = new ObservableCollection<Account>();
-            }
 
-            FetchRoamingDataAsync();
+            if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -158,62 +148,9 @@ namespace CampusNet
             deferral.Complete();
         }
 
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
-        }
-
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
-        {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            await SaveRoamingDataAsync();
-            deferral.Complete();
-        }
-
-        private async void FetchRoamingDataAsync()
-        {
-            var roamingHelper = new RoamingObjectStorageHelper();
-            var localHelper = new LocalObjectStorageHelper();
-            bool isRoamingEnabled;
-
-            if (roamingHelper.KeyExists("Roaming"))
-            {
-                isRoamingEnabled = roamingHelper.Read<bool>("Roaming");
-                localHelper.Save("Roaming", isRoamingEnabled);
-
-                if (isRoamingEnabled)
-                {
-                    if (await roamingHelper.FileExistsAsync("Accounts"))
-                    {
-                        App.Accounts = await roamingHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
-                        await localHelper.SaveFileAsync("Accounts", App.Accounts);
-                    }
-                    if (await roamingHelper.FileExistsAsync("Networks"))
-                    {
-                        App.FavoriteNetworks = await roamingHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
-                        await localHelper.SaveFileAsync("Networks", App.FavoriteNetworks);
-                    }
-                }
-            }
-        }
-
-        private async Task SaveRoamingDataAsync()
-        {
-            var roamingHelper = new RoamingObjectStorageHelper();
-            var localHelper = new LocalObjectStorageHelper();
-            bool isRoamingEnabled = false;
-
-            if (localHelper.KeyExists("Roaming"))
-            {
-                isRoamingEnabled = localHelper.Read<bool>("Roaming");
-            }
-
-            if (isRoamingEnabled)
-            {
-                roamingHelper.Save("Roaming", isRoamingEnabled);
-                await roamingHelper.SaveFileAsync("Accounts", App.Accounts);
-                await roamingHelper.SaveFileAsync("Networks", App.FavoriteNetworks);
-            }
         }
 
         private void ExtendAcrylicIntoTitleBar()
@@ -289,17 +226,20 @@ namespace CampusNet
             ObservableCollection<Network> _favoriteNetworks = null;
             ObservableCollection<Account> _accounts = null;
 
-            if (await localHelper.FileExistsAsync("Accounts"))
-            {
-                _accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
-            }
             if (await localHelper.FileExistsAsync("Networks"))
             {
                 _favoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             }
 
-            if (_accounts == null) _accounts = new ObservableCollection<Account>();
             if (_favoriteNetworks == null) _favoriteNetworks = new ObservableCollection<Network>();
+
+            if (await localHelper.FileExistsAsync("Accounts"))
+            {
+                _accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+            }
+
+            if (_accounts == null) _accounts = new ObservableCollection<Account>();
+
             var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
 
             if (profile != null && _accounts.Count() > 0)

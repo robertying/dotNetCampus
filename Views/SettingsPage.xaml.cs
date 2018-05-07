@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Helpers;
-using System;
+﻿using System;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -18,13 +17,9 @@ namespace CampusNet
 
             var packageVersion = Package.Current.Id.Version;
             Version = String.Format("{0}.{1}.{2}.{3}", packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
-
-            var localHelper = new LocalObjectStorageHelper();
-            IsRoamingEnabled = localHelper.Read<bool>("Roaming");
         }
 
         public string Version { get => version; set => version = value; }
-        public bool IsRoamingEnabled { get => isRoamingEnabled; set => isRoamingEnabled = value; }
 
         private async void GitHubHyperlink_Click(object sender, RoutedEventArgs e)
         {
@@ -34,22 +29,6 @@ namespace CampusNet
         private async void PrivacyPolicyHyperlink_Click(object sender, RoutedEventArgs e)
         {
             await Windows.System.Launcher.LaunchUriAsync(new Uri("https://github.com/robertying/dotNetCampus/blob/master/PRIVACYPOLICY.md"));
-        }
-
-        private void RoamingToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (sender is ToggleSwitch toggleSwitch)
-            {
-                var localHelper = new LocalObjectStorageHelper();
-                if (toggleSwitch.IsOn == true)
-                {
-                    localHelper.Save("Roaming", true);
-                }
-                else
-                {
-                    localHelper.Save("Roaming", false);
-                }
-            }
         }
     }
 }

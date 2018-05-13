@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
@@ -8,6 +9,24 @@ namespace CampusNet
 {
     public static class Utility
     {
+        public static byte[] AddByteToArray(byte[] bArray, byte newByte)
+        {
+            var length = bArray.Length;
+            byte[] newArray = new byte[length + 1];
+            bArray.CopyTo(newArray, 0);
+            newArray[length] = newByte;
+            return newArray;
+        }
+
+        public static string ComputeSHA1(string str)
+        {
+            var encoded = Encoding.GetEncoding("ISO-8859-1").GetBytes(str);
+            IBuffer buffMsg = CryptographicBuffer.CreateFromByteArray(encoded);
+            HashAlgorithmProvider objAlgProv = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
+            IBuffer buffHash = objAlgProv.HashData(buffMsg);
+            return CryptographicBuffer.EncodeToHexString(buffHash);
+        }
+
         public static string ComputeMD5(string str)
         {
             var alg = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);

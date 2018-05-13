@@ -18,14 +18,12 @@ namespace CampusNet
 {
     sealed partial class App : Application
     {
-        private static ObservableCollection<Network> favoriteNetworks;
-        private static ObservableCollection<Account> accounts;
-        public static ObservableCollection<Network> FavoriteNetworks { get => favoriteNetworks; set => favoriteNetworks = value; }
-        public static ObservableCollection<Account> Accounts { get => accounts; set => accounts = value; }
+        public static ObservableCollection<Network> FavoriteNetworks { get; set; }
+        public static ObservableCollection<Account> Accounts { get; set; }
 
         public App()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             SetBackgroundTask();
         }
@@ -33,26 +31,23 @@ namespace CampusNet
         protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
             var localHelper = new LocalObjectStorageHelper();
-            App.FavoriteNetworks = new ObservableCollection<Network>();
-            App.Accounts = new ObservableCollection<Account>();
+            FavoriteNetworks = new ObservableCollection<Network>();
+            Accounts = new ObservableCollection<Account>();
 
             if (await localHelper.FileExistsAsync("Networks"))
             {
-                App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
+                FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             }
-
-            if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
+            if (FavoriteNetworks == null) FavoriteNetworks = new ObservableCollection<Network>();
 
             if (await localHelper.FileExistsAsync("Accounts"))
             {
-                App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
+                Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             }
+            if (Accounts == null) Accounts = new ObservableCollection<Account>();
 
-            if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
 
-            Frame rootFrame = Window.Current.Content as Frame;
-
-            if (rootFrame == null)
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
@@ -92,19 +87,16 @@ namespace CampusNet
             {
                 App.FavoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             }
-
             if (App.FavoriteNetworks == null) App.FavoriteNetworks = new ObservableCollection<Network>();
 
             if (await localHelper.FileExistsAsync("Accounts"))
             {
                 App.Accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             }
-
             if (App.Accounts == null) App.Accounts = new ObservableCollection<Account>();
 
-            Frame rootFrame = Window.Current.Content as Frame;
 
-            if (rootFrame == null)
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
@@ -155,10 +147,13 @@ namespace CampusNet
 
         private void ExtendAcrylicIntoTitleBar()
         {
-            CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.ButtonBackgroundColor = Colors.Transparent;
-            titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.ExtendViewIntoTitleBar = true;
+
+            var viewTitleBar = ApplicationView.GetForCurrentView().TitleBar;
+            viewTitleBar.ButtonBackgroundColor = Colors.Transparent;
+            viewTitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+            viewTitleBar.ButtonForegroundColor = (Color)Resources["SystemBaseHighColor"];
         }
 
         private async void SetBackgroundTask()
@@ -230,15 +225,14 @@ namespace CampusNet
             {
                 _favoriteNetworks = await localHelper.ReadFileAsync<ObservableCollection<Network>>("Networks");
             }
-
             if (_favoriteNetworks == null) _favoriteNetworks = new ObservableCollection<Network>();
 
             if (await localHelper.FileExistsAsync("Accounts"))
             {
                 _accounts = await localHelper.ReadFileAsync<ObservableCollection<Account>>("Accounts");
             }
-
             if (_accounts == null) _accounts = new ObservableCollection<Account>();
+
 
             var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
 
@@ -247,8 +241,9 @@ namespace CampusNet
                 var currentAccount = _accounts.First();
                 var ssid = profile.ProfileName;
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
+                var isWired = !profile.IsWlanConnectionProfile && !profile.IsWwanConnectionProfile;
 
-                if (ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
+                if (!isWired && ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
                 {
                     var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
                     if (response == "Login is successful.")
@@ -279,9 +274,11 @@ namespace CampusNet
                             var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
                             var username = status["username"] as string;
 
-                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid));
-                            toast.Tag = "64";
-                            toast.Group = "Login";
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid))
+                            {
+                                Tag = "64",
+                                Group = "Login"
+                            };
                             toast.Show();
                         }
                     }
@@ -313,9 +310,11 @@ namespace CampusNet
                             var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
                             var username = status["username"] as string;
 
-                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid));
-                            toast.Tag = "64";
-                            toast.Group = "Login";
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid))
+                            {
+                                Tag = "64",
+                                Group = "Login"
+                            };
                             toast.Show();
                         }
                     }
@@ -340,9 +339,127 @@ namespace CampusNet
                             }
                         }
 
-                        var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("WrongPasswordToast"), currentAccount.Username));
-                        toast.Tag = "64";
-                        toast.Group = "Login";
+                        var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("WrongPasswordToast"), currentAccount.Username))
+                        {
+                            Tag = "64",
+                            Group = "Login"
+                        };
+                        toast.Show();
+                    }
+                }
+                else if (isWired)
+                {
+                    var credential = CredentialHelper.GetCredentialFromLocker(currentAccount.Username);
+                    if (credential != null)
+                    {
+                        credential.RetrievePassword();
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                    var response = await AuthHelper.LoginAsync(4, currentAccount.Username, credential.Password);
+                    if (response.Contains("login_ok"))
+                    {
+                        await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);
+
+                        var status = await NetHelper.GetStatusAsync();
+                        if (status != null)
+                        {
+                            var lastToast = ToastNotificationManager.History.GetHistory().FirstOrDefault();
+                            if (lastToast != null)
+                            {
+                                var expirationTime = lastToast.ExpirationTime ?? DateTimeOffset.MinValue;
+                                var lastProfileName = lastToast.Content.InnerText.Split("\n").Last();
+                                var now = DateTimeOffset.Now.AddDays(3);
+                                var timeDiff = now.Subtract(expirationTime);
+                                var lastSsid = lastProfileName.Substring(lastProfileName.LastIndexOf(' ') + 1);
+
+                                if (lastProfileName == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                                else if (lastSsid == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                            }
+
+                            var usage = Utility.GetUsageDescription((long)status["total_usage"]);
+                            var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
+                            var username = status["username"] as string;
+
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid))
+                            {
+                                Tag = "64",
+                                Group = "Login"
+                            };
+                            toast.Show();
+                        }
+                    }
+                    else if (response == "ip_already_online_error")
+                    {
+                        var status = await NetHelper.GetStatusAsync();
+                        if (status != null)
+                        {
+                            var lastToast = ToastNotificationManager.History.GetHistory().FirstOrDefault();
+                            if (lastToast != null)
+                            {
+                                var expirationTime = lastToast.ExpirationTime ?? DateTimeOffset.MinValue;
+                                var lastProfileName = lastToast.Content.InnerText.Split("\n").Last();
+                                var now = DateTimeOffset.Now.AddDays(3);
+                                var timeDiff = now.Subtract(expirationTime);
+                                var lastSsid = lastProfileName.Substring(lastProfileName.LastIndexOf(' ') + 1);
+
+                                if (lastProfileName == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                                else if (lastSsid == ssid && timeDiff.Minutes < 1)
+                                {
+                                    return;
+                                }
+                            }
+
+                            var usage = Utility.GetUsageDescription((long)status["total_usage"]);
+                            var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
+                            var username = status["username"] as string;
+
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("Auto-loginToast"), username, usage, balance, ssid))
+                            {
+                                Tag = "64",
+                                Group = "Login"
+                            };
+                            toast.Show();
+                        }
+                    }
+                    else if (response == "SRun Auth Server")
+                    {
+                        var lastToast = ToastNotificationManager.History.GetHistory().FirstOrDefault();
+                        if (lastToast != null)
+                        {
+                            var expirationTime = lastToast.ExpirationTime ?? DateTimeOffset.MinValue;
+                            var lastProfileName = lastToast.Content.InnerText.Split("\n").Last();
+                            var now = DateTimeOffset.Now.AddDays(3);
+                            var timeDiff = now.Subtract(expirationTime);
+                            var lastSsid = lastProfileName.Substring(lastProfileName.LastIndexOf(' ') + 1);
+
+                            if (lastProfileName == ssid && timeDiff.Minutes < 1)
+                            {
+                                return;
+                            }
+                            else if (lastSsid == ssid && timeDiff.Minutes < 1)
+                            {
+                                return;
+                            }
+                        }
+
+                        var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("WrongPasswordToast"), currentAccount.Username))
+                        {
+                            Tag = "64",
+                            Group = "Login"
+                        };
                         toast.Show();
                     }
                 }

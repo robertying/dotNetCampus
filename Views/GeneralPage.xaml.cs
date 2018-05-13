@@ -201,7 +201,8 @@ namespace CampusNet
 
         public async Task LoginNetworkIfFavoriteAsync(string ssid)
         {
-            if (App.FavoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0 || ssid.Contains("Tsinghua"))
+            var isWired = !Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWlanConnectionProfile && !Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile;
+            if (!isWired && App.FavoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0 || ssid.Contains("Tsinghua"))
             {
                 var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
                 if (response == "Login is successful.")
@@ -246,6 +247,76 @@ namespace CampusNet
                 else if (response == "E2553: Password is error.")
                 {
                     App.Accounts.RemoveAt(0);
+                    var localHelper = new LocalObjectStorageHelper();
+                    await localHelper.SaveFileAsync("Accounts", App.Accounts);
+
+                    var rootFrame = Window.Current.Content as Frame;
+                    rootFrame.Navigate(typeof(WelcomePage));
+                }
+            }
+            else if (isWired)
+            {
+                var credential = CredentialHelper.GetCredentialFromLocker(currentAccount.Username);
+                if (credential != null)
+                {
+                    credential.RetrievePassword();
+                }
+                else
+                {
+                    var rootFrame = Window.Current.Content as Frame;
+                    rootFrame.Navigate(typeof(WelcomePage));
+                    return;
+                }
+
+                var response = await AuthHelper.LoginAsync(4, currentAccount.Username, credential.Password);
+                if (response.Contains("login_ok"))
+                {
+                    await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);
+
+                    isOnline = true;
+                    ProgressRing.IsActive = false;
+                    RadialProgressBar.Visibility = Visibility.Visible;
+                    RadialProgressBar.FlowDirection = FlowDirection.LeftToRight;
+                    if (this.Resources["RadialProgressBarBecomeFull"] is Storyboard radialProgressBarBecomeFull)
+                    {
+                        radialProgressBarBecomeFull.Begin();
+                    }
+                    var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                    LoginButton.Content = resourceLoader.GetString("Online");
+                }
+                else if (response == "ip_already_online_error")
+                {
+                    isOnline = true;
+                    ProgressRing.IsActive = false;
+                    RadialProgressBar.Visibility = Visibility.Visible;
+                    RadialProgressBar.Value = 180;
+                    var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                    LoginButton.Content = resourceLoader.GetString("Online");
+                }
+                else if (response == "login_error#E2532: The two authentication interval cannot be less than 10 seconds.")
+                {
+                    await Task.Delay(3000);
+                    if ((await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password)).Contains("login_ok"))
+                    {
+                        await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);
+
+                        isOnline = true;
+                        ProgressRing.IsActive = false;
+                        RadialProgressBar.Visibility = Visibility.Visible;
+                        RadialProgressBar.FlowDirection = FlowDirection.LeftToRight;
+                        if (this.Resources["RadialProgressBarBecomeFull"] is Storyboard radialProgressBarBecomeFull)
+                        {
+                            radialProgressBarBecomeFull.Begin();
+                        }
+                        var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                        LoginButton.Content = resourceLoader.GetString("Online");
+                    }
+                }
+                else if (response == "SRun Auth Server")
+                {
+                    App.Accounts.RemoveAt(0);
+                    CredentialHelper.RemoveAccount(currentAccount.Username);
+
                     var localHelper = new LocalObjectStorageHelper();
                     await localHelper.SaveFileAsync("Accounts", App.Accounts);
 

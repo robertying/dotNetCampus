@@ -23,7 +23,8 @@ namespace CampusNet
         {
             AccountDialog accountDialog = sender as AccountDialog;
             var username = accountDialog.UsernameTextBox.Text;
-            var password = Utility.ComputeMD5(accountDialog.PasswordBox.Password);
+            var originalPassword = accountDialog.PasswordBox.Password;
+            var password = Utility.ComputeMD5(originalPassword);
 
             Account newAccount = new Account
             {
@@ -45,6 +46,8 @@ namespace CampusNet
 
                     var localHelper = new LocalObjectStorageHelper();
                     await localHelper.SaveFileAsync("Accounts", App.Accounts);
+
+                    CredentialHelper.AddAccount(username, originalPassword);
                 }
                 else
                 {

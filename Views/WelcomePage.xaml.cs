@@ -101,7 +101,8 @@ namespace CampusNet
             ProgressRing.IsActive = true;
 
             var username = UsernameTextBox.Text;
-            var password = Utility.ComputeMD5(PasswordBox.Password);
+            var originalPassword = PasswordBox.Password;
+            var password = Utility.ComputeMD5(originalPassword);
 
             if (username == "10582RobertYing..NetCampus" && password == Utility.ComputeMD5("10582RobertYing..NetCampus"))
             {
@@ -132,6 +133,7 @@ namespace CampusNet
 
                 var localHelper = new LocalObjectStorageHelper();
                 await localHelper.SaveFileAsync("Accounts", App.Accounts);
+                CredentialHelper.AddAccount(username, originalPassword);
 
                 var rootFrame = Window.Current.Content as Frame;
                 rootFrame.Navigate(typeof(RootPage));

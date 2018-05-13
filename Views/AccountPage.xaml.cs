@@ -169,6 +169,7 @@ namespace CampusNet
 
                     var localHelper = new LocalObjectStorageHelper();
                     await localHelper.SaveFileAsync("Accounts", Accounts);
+                    CredentialHelper.RemoveAccount(username);
                 }
             }
         }

@@ -11,19 +11,19 @@
         <StackPanel>
             <TextBlock
                 x:Uid="Privacy"
-                Margin="12,0,0,0"
+                Margin="16,0,0,0"
                 Style="{StaticResource SubtitleTextBlockStyle}" />
             <HyperlinkButton Margin="24,5,0,0" Click="PrivacyPolicyHyperlink_Click">
                 <TextBlock x:Uid="PrivacyPolicy" />
             </HyperlinkButton>
             <TextBlock
                 x:Uid="Version"
-                Margin="12,15,0,0"
+                Margin="16,15,0,0"
                 Style="{StaticResource SubtitleTextBlockStyle}" />
             <TextBlock Margin="24,5,0,0" Text="{x:Bind Path=Version, Mode=OneWay}" />
             <TextBlock
                 x:Uid="Contributing"
-                Margin="12,15,0,0"
+                Margin="16,15,0,0"
                 Style="{StaticResource SubtitleTextBlockStyle}" />
             <HyperlinkButton Margin="24,5,0,0" Click="GitHubHyperlink_Click">
                 <TextBlock>robertying / dotNetCampus</TextBlock>

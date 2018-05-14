@@ -2,11 +2,8 @@
     x:Class="CampusNet.RootPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:behaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:Windows10version1803="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 6)"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:local="using:CampusNet"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -28,13 +25,15 @@
 
         <NavigationView
             x:Name="NavView"
+            Windows10version1803:IsBackButtonVisible="Collapsed"
+            Background="Transparent"
             ExpandedModeThresholdWidth="900"
-            Header=" "
-            OpenPaneLength="280"
-            SelectionChanged="NavView_SelectionChanged">
+            ItemInvoked="NavView_ItemInvoked"
+            Loaded="NavView_Loaded"
+            OpenPaneLength="280">
             <NavigationView.HeaderTemplate>
                 <DataTemplate x:DataType="TextBlock">
-                    <Grid Margin="12,36,0,20">
+                    <Grid Margin="0,48,0,0">
                         <TextBlock
                             x:Name="HeaderTextBlock"
                             VerticalAlignment="Center"
@@ -69,12 +68,11 @@
             </Frame>
         </NavigationView>
 
-        <TextBlock
-            x:Name="AppTitle"
-            Margin="12,8"
-            HorizontalAlignment="Left"
+        <Rectangle
+            x:Name="TitlebarRegion"
+            Height="32"
+            Margin="48,0,0,0"
             VerticalAlignment="Top"
-            IsHitTestVisible="false"
-            Style="{StaticResource CaptionTextBlockStyle}" />
+            Fill="Transparent" />
     </Grid>
 </Page>

@@ -104,7 +104,7 @@
             <StackPanel>
                 <TextBlock
                     x:Uid="Current"
-                    Margin="12,0,0,0"
+                    Margin="16,0,0,0"
                     Style="{StaticResource SubtitleTextBlockStyle}" />
                 <StackPanel Margin="24,15,0,0" Orientation="Horizontal">
                     <TextBlock x:Name="CurrentUsernameTextBlock" Text="{x:Bind Path=CurrentAccount.Username, Mode=OneWay}" />
@@ -120,12 +120,12 @@
 
                 <TextBlock
                     x:Uid="Sessions"
-                    Margin="12,15,0,0"
+                    Margin="16,15,0,0"
                     Style="{StaticResource SubtitleTextBlockStyle}" />
                 <ListView
                     x:Name="SessionsListView"
-                    Width="472"
-                    Margin="5,15,23,0"
+                    Width="470"
+                    Margin="16,15,23,0"
                     HorizontalAlignment="Left"
                     ItemTemplate="{StaticResource SessionsList}"
                     ItemsSource="{Binding SessionsForCurrentAccount}">
@@ -138,7 +138,7 @@
 
                 <TextBlock
                     x:Uid="Manage"
-                    Margin="12,15,0,0"
+                    Margin="16,15,0,0"
                     Style="{StaticResource SubtitleTextBlockStyle}" />
                 <TextBlock x:Uid="DragAndDrop" Margin="24,15,0,0" />
                 <HyperlinkButton Margin="24,5,0,0" Click="AddAccountButton_Click">
@@ -147,8 +147,8 @@
 
                 <ListView
                     x:Name="AccountsListView"
-                    Width="472"
-                    Margin="5,5,23,10"
+                    Width="470"
+                    Margin="24,5,23,10"
                     HorizontalAlignment="Left"
                     AllowDrop="True"
                     CanDrag="True"

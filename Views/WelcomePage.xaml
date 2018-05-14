@@ -32,27 +32,32 @@
                     KeyDown="PasswordBox_KeyDown"
                     PasswordChanged="PasswordBox_PasswordChanged" />
 
-                <StackPanel
-                    Margin="0,10,0,0"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
                     <TextBlock
                         x:Name="StatusTextBlock"
-                        Margin="0,0,10,0"
-                        HorizontalAlignment="Right"
+                        Grid.Column="0"
                         VerticalAlignment="Center" />
                     <ProgressRing
                         x:Name="ProgressRing"
+                        Grid.Column="1"
+                        Margin="0,0,10,0"
+                        HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         IsActive="False" />
                     <Button
                         x:Name="LoginButton"
                         x:Uid="ButtonLogin"
-                        Margin="10,0,0,0"
+                        Grid.Column="2"
                         HorizontalAlignment="Right"
                         Click="LoginButton_Click"
                         IsEnabled="False" />
-                </StackPanel>
+                </Grid>
             </StackPanel>
         </StackPanel>
     </Grid>

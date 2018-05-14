@@ -115,15 +115,13 @@ namespace CampusNet
                 var localHelper = new LocalObjectStorageHelper();
                 await localHelper.SaveFileAsync("Accounts", App.Accounts);
 
-                await Task.Delay(500);
                 var rootFrame = Window.Current.Content as Frame;
                 rootFrame.Navigate(typeof(RootPage));
             }
 
-            var response = await NetHelper.LoginAsync(username, password);
-            await Task.Delay(500);
+            var response = await UseregHelper.LoginAsync(username, password);
 
-            if (response == "Login is successful.")
+            if (response == "ok")
             {
                 App.Accounts.Insert(0, new Account
                 {
@@ -138,21 +136,7 @@ namespace CampusNet
                 var rootFrame = Window.Current.Content as Frame;
                 rootFrame.Navigate(typeof(RootPage));
             }
-            else if (response == "IP has been online, please logout." || response == "E2620: You are already online.")
-            {
-                await NetHelper.LogoutAsync();
-                LoginButton_Click(null, null);
-            }
-            else if (response == "E2532: The two authentication interval cannot be less than 3 seconds." || response == "E2532: The two authentication interval cannot be less than 10 seconds.")
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                StatusTextBlock.Text = resourceLoader.GetString("FrequentLogin");
-                LoginButton.IsEnabled = true;
-                UsernameTextBox.IsEnabled = true;
-                PasswordBox.IsEnabled = true;
-                ProgressRing.IsActive = false;
-            }
-            else if (response == "E2531: User not found.")
+            else if (response == "用户不存在")
             {
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                 StatusTextBlock.Text = resourceLoader.GetString("UserNotFound");

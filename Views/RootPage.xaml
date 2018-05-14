@@ -7,13 +7,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <Storyboard x:Name="FadeIn_Image">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="NewBackgroundImage" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:3" Value="1" />
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+
     <Grid Background="{StaticResource SystemControlAcrylicWindowMediumHighBrush}">
         <Image
             x:Name="OldBackgroundImage"
             Height="350"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Opacity="100"
+            Opacity="1"
             Stretch="UniformToFill" />
         <Image
             x:Name="NewBackgroundImage"

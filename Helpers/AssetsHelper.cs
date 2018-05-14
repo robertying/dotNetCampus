@@ -7,7 +7,7 @@ namespace CampusNet
 {
     public static class AssetsHelper
     {
-        private static Uri BING_URI = new Uri("https://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US");
+        private static readonly Uri BING_URI = new Uri("https://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US");
 
         public static async Task<Uri> GetBingWallpaperAsync()
         {

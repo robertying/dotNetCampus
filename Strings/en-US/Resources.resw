@@ -375,4 +375,8 @@ Please change to the right one</value>
   <data name="RoamingToggleSwitch.OnContent" xml:space="preserve">
     <value>On</value>
   </data>
+  <data name="LowBalanceAlert" xml:space="preserve">
+    <value>Low balance alert!
+Balance: {0}</value>
+  </data>
 </root>

@@ -561,7 +561,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Margin="50,0,50,0" Background="Transparent">
+    <Grid Margin="50,-35,50,0" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -702,6 +702,7 @@
         <charting:Chart
             x:Name="DetailUsageChart"
             Grid.Row="1"
+            MinHeight="200"
             Margin="0,40,0,0">
             <charting:LineSeries
                 AnimationSequence="FirstToLast"

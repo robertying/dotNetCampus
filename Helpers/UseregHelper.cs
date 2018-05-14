@@ -11,11 +11,8 @@ namespace CampusNet
 {
     public class UsageWithDate
     {
-        private int date;
-        private double usage;
-
-        public int Date { get => date; set => date = value; }
-        public double Usage { get => usage; set => usage = value; }
+        public int Date { get; set; }
+        public double Usage { get; set; }
 
         public UsageWithDate()
         {
@@ -26,14 +23,13 @@ namespace CampusNet
 
     public static class UseregHelper
     {
-        private static string BASE_URL = "https://usereg.tsinghua.edu.cn";
-        private static string LOGIN_URL = BASE_URL + "/do.php";
-        private static string INFO_URL = BASE_URL + "/user_info.php";
-        private static string SESSIONS_URL = BASE_URL + "/online_user_ipv4.php";
-        private static string DETAIL_URL = BASE_URL + "/user_detail_list.php";
-        private static Dictionary<string, object> info;
+        private static readonly string BASE_URL = "https://usereg.tsinghua.edu.cn";
+        private static readonly string LOGIN_URL = BASE_URL + "/do.php";
+        private static readonly string INFO_URL = BASE_URL + "/user_info.php";
+        private static readonly string SESSIONS_URL = BASE_URL + "/online_user_ipv4.php";
+        private static readonly string DETAIL_URL = BASE_URL + "/user_detail_list.php";
 
-        public static Dictionary<string, object> Info { get => info; set => info = value; }
+        public static Dictionary<string, object> Info { get; set; }
 
         public static async Task<string> LoginAsync(string username, string password)
         {
@@ -68,7 +64,7 @@ namespace CampusNet
 
         public static async Task<string> LogoutAsync(string username, string password, string id)
         {
-            if (await LoginAsync(username, password) == "ok") // TODO
+            if (await LoginAsync(username, password) == "ok")
             {
                 Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
 
@@ -105,7 +101,7 @@ namespace CampusNet
 
         public static async Task<int> GetSessionNumberAsync(string username, string password)
         {
-            if (await LoginAsync(username, password) == "ok") // TODO
+            if (await LoginAsync(username, password) == "ok")
             {
                 Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
                 Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
@@ -138,7 +134,7 @@ namespace CampusNet
 
         public static async Task<Dictionary<string, object>> GetInfoAsync(string username, string password)
         {
-            if (await LoginAsync(username, password) == "ok") // TODO
+            if (await LoginAsync(username, password) == "ok")
             {
                 Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
 

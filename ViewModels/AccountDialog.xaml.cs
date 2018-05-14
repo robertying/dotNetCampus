@@ -10,9 +10,8 @@ namespace CampusNet
     {
         private bool validUsernameFlag = false;
         private bool validPasswordFlag = false;
-        private Account oldAccount;
 
-        public Account OldAccount { get => oldAccount; set => oldAccount = value; }
+        public Account OldAccount { get; set; }
 
         public AccountDialog()
         {

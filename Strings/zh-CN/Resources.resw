@@ -375,4 +375,8 @@
   <data name="RoamingToggleSwitch.OnContent" xml:space="preserve">
     <value>开启</value>
   </data>
+  <data name="LowBalanceAlert" xml:space="preserve">
+    <value>校园网账户余额不足
+当前余额: {0}</value>
+  </data>
 </root>

@@ -11,9 +11,6 @@ namespace CampusNet
 {
     public sealed partial class AccountPage : Page
     {
-        private Account currentAccount;
-        private ObservableCollection<Session> sessionsForCurrentAccount;
-
         public AccountPage()
         {
             this.InitializeComponent();
@@ -48,15 +45,19 @@ namespace CampusNet
             get => App.Accounts;
             set => App.Accounts = value;
         }
-        public Account CurrentAccount { get => currentAccount; set => currentAccount = value; }
-        public ObservableCollection<Session> SessionsForCurrentAccount { get => sessionsForCurrentAccount; set => sessionsForCurrentAccount = value; }
+        public Account CurrentAccount { get; set; }
+        public ObservableCollection<Session> SessionsForCurrentAccount { get; set; }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-            CurrentAccount = Accounts.FirstOrDefault();
             await GetAllAccountsInfo();
+
+            CurrentAccount = Accounts.FirstOrDefault();
+            CurrentUsernameTextBlock.Text = CurrentAccount.Username ?? "";
+            CurrentUsageTextBlock.Text = CurrentAccount.Usage ?? "";
+            CurrentBalanceTextBlock.Text = CurrentAccount.Balance ?? "";
 
             if (CurrentAccount.Sessions != null)
             {

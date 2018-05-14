@@ -7,9 +7,6 @@ namespace CampusNet
 {
     public sealed partial class SettingsPage : Page
     {
-        private string version;
-        private bool isRoamingEnabled;
-
         public SettingsPage()
         {
             this.InitializeComponent();
@@ -19,7 +16,7 @@ namespace CampusNet
             Version = String.Format("{0}.{1}.{2}.{3}", packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
         }
 
-        public string Version { get => version; set => version = value; }
+        public string Version { get; set; }
 
         private async void GitHubHyperlink_Click(object sender, RoutedEventArgs e)
         {

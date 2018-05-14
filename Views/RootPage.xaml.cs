@@ -1,11 +1,14 @@
 ﻿using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI;
-using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
 
 namespace CampusNet
 {
@@ -14,12 +17,18 @@ namespace CampusNet
         public RootPage()
         {
             this.InitializeComponent();
-
-            string appName = Windows.ApplicationModel.Package.Current.DisplayName;
-            AppTitle.Text = appName;
-
             this.Loaded += RootPage_Loaded;
+
+            Window.Current.SetTitleBar(TitlebarRegion);
+            Window.Current.CoreWindow.SizeChanged += (s, e) => UpdateTitlebarRegion();
+
             ContentFrame.Navigate(typeof(GeneralPage));
+        }
+
+        private void UpdateTitlebarRegion()
+        {
+            var height = CoreApplication.GetCurrentView().TitleBar.Height;
+            TitlebarRegion.Height = height;
         }
 
         private async void RootPage_Loaded(object sender, RoutedEventArgs e)
@@ -46,48 +55,94 @@ namespace CampusNet
 
             if (imageSource != null)
             {
-                NewBackgroundImage.Fade(100, 3000, 0).Start();
-                await Task.Delay(3000);
-                OldBackgroundImage.Visibility = Visibility.Collapsed;
+                if (this.Resources["FadeIn_Image"] is Storyboard fadeIn) fadeIn.Begin();
             }
         }
 
-        private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs e)
+        private void NavView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (e.IsSettingsSelected)
+            foreach (NavigationViewItemBase item in NavView.MenuItems)
             {
-                ContentFrame.Navigate(typeof(SettingsPage));
+                if (item is NavigationViewItem && item.Tag.ToString() == "general")
+                {
+                    NavView.SelectedItem = item;
+                    break;
+                }
+            }
+
+            ContentFrame.Navigated += On_Navigated;
+        }
+
+        private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.IsSettingsInvoked)
+            {
+                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
                 NewBackgroundImage.Visibility = Visibility.Collapsed;
                 OldBackgroundImage.Visibility = Visibility.Collapsed;
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                ContentFrame.Navigate(typeof(SettingsPage));
                 NavView.Header = resourceLoader.GetString("Settings");
             }
             else
             {
-                NavigationViewItem item = e.SelectedItem as NavigationViewItem;
+                var item = sender.MenuItems.OfType<NavigationViewItem>().First(x => (string)x.Content == (string)args.InvokedItem);
+                NavView_Navigate(item as NavigationViewItem);
+            }
+        }
 
-                switch (item.Tag.ToString())
+        private void NavView_Navigate(NavigationViewItem item)
+        {
+            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+
+            switch (item.Tag)
+            {
+                case "general":
+                    NavView.Header = " ";
+                    ContentFrame.Navigate(typeof(GeneralPage));
+                    NewBackgroundImage.Visibility = Visibility.Visible;
+                    OldBackgroundImage.Visibility = Visibility.Visible;
+                    break;
+
+                case "wifi":
+                    NewBackgroundImage.Visibility = Visibility.Collapsed;
+                    OldBackgroundImage.Visibility = Visibility.Collapsed;
+                    ContentFrame.Navigate(typeof(WifiPage));
+                    NavView.Header = resourceLoader.GetString("Wi-Fi");
+                    break;
+
+                case "account":
+                    NewBackgroundImage.Visibility = Visibility.Collapsed;
+                    OldBackgroundImage.Visibility = Visibility.Collapsed;
+                    ContentFrame.Navigate(typeof(AccountPage));
+                    NavView.Header = resourceLoader.GetString("Account");
+                    break;
+            }
+        }
+
+        private void On_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (ContentFrame.SourcePageType == typeof(SettingsPage))
+            {
+                NavView.SelectedItem = NavView.SettingsItem as NavigationViewItem;
+            }
+            else
+            {
+                Dictionary<Type, string> lookup = new Dictionary<Type, string>()
                 {
-                    case "general":
-                        ContentFrame.Navigate(typeof(GeneralPage));
-                        NewBackgroundImage.Visibility = Visibility.Visible;
-                        OldBackgroundImage.Visibility = Visibility.Visible;
-                        NavView.Header = " ";
+                    {typeof(GeneralPage), "general"},
+                    {typeof(WifiPage), "wifi"},
+                    {typeof(AccountPage), "account"}
+                };
+
+                String stringTag = lookup[ContentFrame.SourcePageType];
+
+                foreach (NavigationViewItemBase item in NavView.MenuItems)
+                {
+                    if (item is NavigationViewItem && item.Tag.Equals(stringTag))
+                    {
+                        item.IsSelected = true;
                         break;
-                    case "wifi":
-                        ContentFrame.Navigate(typeof(WifiPage));
-                        NewBackgroundImage.Visibility = Visibility.Collapsed;
-                        OldBackgroundImage.Visibility = Visibility.Collapsed;
-                        var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                        NavView.Header = resourceLoader.GetString("Wi-Fi");
-                        break;
-                    case "account":
-                        ContentFrame.Navigate(typeof(AccountPage));
-                        NewBackgroundImage.Visibility = Visibility.Collapsed;
-                        OldBackgroundImage.Visibility = Visibility.Collapsed;
-                        resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                        NavView.Header = resourceLoader.GetString("Account");
-                        break;
+                    }
                 }
             }
         }

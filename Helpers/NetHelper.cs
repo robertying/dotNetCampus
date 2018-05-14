@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CampusNet
 {
     public static class NetHelper
     {
-        private static string BASE_URL = "https://net.tsinghua.edu.cn";
-        private static string STATUS_URL = BASE_URL + "/rad_user_info.php";
-        private static string LOGIN_URL = BASE_URL + "/do_login.php";
-        private static string ONLINE_URL = BASE_URL + "/wired/succeed.html?online";
-        private static string USER_AGENT = "Windows NT";
+        private static readonly string BASE_URL = "https://net.tsinghua.edu.cn";
+        private static readonly string STATUS_URL = BASE_URL + "/rad_user_info.php";
+        private static readonly string LOGIN_URL = BASE_URL + "/do_login.php";
+        private static readonly string ONLINE_URL = BASE_URL + "/wired/succeed.html?online";
+        private static readonly string USER_AGENT = ".Net Campus";
 
         public static async Task<string> LoginAsync(string username, string password)
         {
@@ -108,16 +109,36 @@ namespace CampusNet
             }
         }
 
-        public static bool IsOnline()
+        public static async Task<bool> IsOnline()
         {
+            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+            var cancellationTokenSource = new CancellationTokenSource(100);
+            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+
             try
             {
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://net.tsinghua.edu.cn");
-                request.AllowAutoRedirect = false;
-                request.Method = "HEAD";
-                request.Timeout = 100;
+                httpResponse = await httpClient.GetAsync(new Uri("https://net.tsinghua.edu.cn")).AsTask(cancellationTokenSource.Token);
+                httpResponse.EnsureSuccessStatusCode();
 
-                var response = request.GetResponse();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> IsCampus()
+        {
+            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+            var cancellationTokenSource = new CancellationTokenSource(500);
+            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+
+            try
+            {
+                httpResponse = await httpClient.GetAsync(new Uri("https://usereg.tsinghua.edu.cn")).AsTask(cancellationTokenSource.Token);
+                httpResponse.EnsureSuccessStatusCode();
+
                 return true;
             }
             catch

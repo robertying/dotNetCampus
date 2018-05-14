@@ -139,7 +139,8 @@ Balance: {2}
 Network: {3}</value>
   </data>
   <data name="Auto-loginDescription.Text" xml:space="preserve">
-    <value>Auto-login is enabled only for Favorite networks, including Tsinghua and Tsinghua-5G
+    <value>Auto-login is enabled only for Favorite networks, including Tsinghua, Tsinghua-5G and wired network
+s
 Click to choose to remove the network from Favorites</value>
   </data>
   <data name="ButtonAccount.Content" xml:space="preserve">

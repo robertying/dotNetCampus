@@ -139,7 +139,7 @@
 网络: {3}</value>
   </data>
   <data name="Auto-loginDescription.Text" xml:space="preserve">
-    <value>自动登录只对收藏的网络以及 Tsinghua 和 Tsinghua-5G 启用
+    <value>自动登录只对收藏的网络以及 Tsinghua、Tsinghua-5G 和有线网络启用
 单击后可选择从收藏中移除该网络</value>
   </data>
   <data name="ButtonAccount.Content" xml:space="preserve">

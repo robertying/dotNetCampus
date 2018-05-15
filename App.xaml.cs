@@ -419,8 +419,15 @@ namespace CampusNet
                 {
                     var balance = Convert.ToDouble(status["balance"]);
                     var balanceDescription = Utility.GetBalanceDescription(balance);
+                    var threshold = 5;
 
-                    if (balance < 5)
+                    var localHelper = new LocalObjectStorageHelper();
+                    if (localHelper.KeyExists("BalanceThreshold"))
+                    {
+                        threshold = localHelper.Read("BalanceThreshold", 5);
+                    }
+
+                    if (balance < threshold)
                     {
                         var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
                         var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("LowBalanceAlert"), balanceDescription))

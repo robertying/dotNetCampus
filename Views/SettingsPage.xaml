@@ -10,8 +10,23 @@
     <Grid Background="Transparent">
         <StackPanel>
             <TextBlock
-                x:Uid="Privacy"
+                x:Uid="LowBalanceAlert"
                 Margin="16,0,0,0"
+                Style="{StaticResource SubtitleTextBlockStyle}" />
+            <Slider
+                x:Name="BalanceSlider"
+                x:Uid="BalanceThreshold"
+                Width="200"
+                Margin="24,10,0,0"
+                HorizontalAlignment="Left"
+                Maximum="10"
+                Minimum="0"
+                TickFrequency="1"
+                TickPlacement="BottomRight"
+                ValueChanged="Slider_ValueChanged" />
+            <TextBlock
+                x:Uid="Privacy"
+                Margin="16,15,0,0"
                 Style="{StaticResource SubtitleTextBlockStyle}" />
             <HyperlinkButton Margin="24,5,0,0" Click="PrivacyPolicyHyperlink_Click">
                 <TextBlock x:Uid="PrivacyPolicy" />

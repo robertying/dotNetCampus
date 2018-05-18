@@ -42,8 +42,8 @@ namespace CampusNet
                 if (isOnline)
                 {
                     SetLoginButton();
-                    await LoadCachedStatusAsync();
                 }
+                await LoadCachedStatusAsync();
 
                 await LoginNetworkIfFavoriteAsync();
 
@@ -114,6 +114,12 @@ namespace CampusNet
             if (await localHelper.FileExistsAsync("DetailUsage"))
             {
                 DetailUsage = await localHelper.ReadFileAsync<List<UsageWithDate>>("DetailUsage");
+            }
+            if (DetailUsage != null)
+            {
+                (DetailUsageChart.Series[0] as LineSeries).ItemsSource = DetailUsage;
+                SetChartAxis();
+                if (this.Resources["FadeIn_Chart"] is Storyboard fadeIn) fadeIn.Begin();
             }
         }
 
@@ -236,13 +242,6 @@ namespace CampusNet
 
         private async Task GetUsageChartSourceAsync()
         {
-            if (DetailUsage != null)
-            {
-                (DetailUsageChart.Series[0] as LineSeries).ItemsSource = DetailUsage;
-                SetChartAxis();
-                if (this.Resources["FadeIn_Chart"] is Storyboard fadeIn) fadeIn.Begin();
-            }
-
             await UseregHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
             DetailUsage = await UseregHelper.GetDetailUsageForChart();
 
@@ -254,7 +253,6 @@ namespace CampusNet
                 (DetailUsageChart.Series[0] as LineSeries).ItemsSource = DetailUsage;
                 SetChartAxis();
             }
-
         }
 
         private void SetChartAxis()

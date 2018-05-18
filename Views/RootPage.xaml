@@ -39,7 +39,7 @@
             SelectionChanged="NavView_SelectionChanged">
             <NavigationView.HeaderTemplate>
                 <DataTemplate x:DataType="TextBlock">
-                    <Grid Margin="0,48,0,0">
+                    <Grid Margin="3,48,0,0">
                         <TextBlock
                             x:Name="HeaderTextBlock"
                             VerticalAlignment="Center"
@@ -53,14 +53,14 @@
                     x:Uid="NavViewItemGeneral"
                     Icon="Home"
                     Tag="general" />
-                <NavigationViewItem x:Uid="NavViewItemWiFi" Tag="wifi">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE701;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
                 <NavigationViewItem x:Uid="NavViewItemAccount" Tag="account">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE716;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem x:Uid="NavViewItemWiFi" Tag="wifi">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE701;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

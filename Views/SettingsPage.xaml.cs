@@ -23,6 +23,15 @@ namespace CampusNet
                 BalanceSlider.Value = 5;
             }
 
+            if (localHelper.KeyExists("IsLowBalanceAlertEnabled"))
+            {
+                LowBalanceAlertToggleSwitch.IsOn = localHelper.Read("IsLowBalanceAlertEnabled", true);
+            }
+            else
+            {
+                LowBalanceAlertToggleSwitch.IsOn = true;
+            }
+
             var packageVersion = Package.Current.Id.Version;
             Version = String.Format("{0}.{1}.{2}.{3}", packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
         }
@@ -45,6 +54,15 @@ namespace CampusNet
             {
                 var localHelper = new LocalObjectStorageHelper();
                 localHelper.Save("BalanceThreshold", slider.Value);
+            }
+        }
+
+        private void LowBalanceAlertToggleSwitchToggled(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleSwitch toggleSwitch)
+            {
+                var localHelper = new LocalObjectStorageHelper();
+                localHelper.Save("IsLowBalanceAlertEnabled", toggleSwitch.IsOn);
             }
         }
     }

@@ -13,6 +13,10 @@
                 x:Uid="LowBalanceAlert"
                 Margin="16,0,0,0"
                 Style="{StaticResource SubtitleTextBlockStyle}" />
+            <ToggleSwitch
+                x:Name="LowBalanceAlertToggleSwitch"
+                Margin="24,10,0,0"
+                Toggled="LowBalanceAlertToggleSwitchToggled" />
             <Slider
                 x:Name="BalanceSlider"
                 x:Uid="BalanceThreshold"

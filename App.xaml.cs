@@ -410,32 +410,41 @@ namespace CampusNet
 
         private async Task LowBalanceAlert()
         {
-            var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
-
-            if (profile != null)
+            var localHelper = new LocalObjectStorageHelper();
+            var isLowBalanceAlertEnabled = true;
+            if (localHelper.KeyExists("IsLowBalanceAlertEnabled"))
             {
-                var status = await NetHelper.GetStatusAsync();
-                if (status != null)
+                isLowBalanceAlertEnabled = localHelper.Read("IsLowBalanceAlertEnabled", true);
+            }
+
+            if (isLowBalanceAlertEnabled)
+            {
+                var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+
+                if (profile != null)
                 {
-                    var balance = Convert.ToDouble(status["balance"]);
-                    var balanceDescription = Utility.GetBalanceDescription(balance);
-                    var threshold = 5;
-
-                    var localHelper = new LocalObjectStorageHelper();
-                    if (localHelper.KeyExists("BalanceThreshold"))
+                    var status = await NetHelper.GetStatusAsync();
+                    if (status != null)
                     {
-                        threshold = localHelper.Read("BalanceThreshold", 5);
-                    }
+                        var balance = Convert.ToDouble(status["balance"]);
+                        var balanceDescription = Utility.GetBalanceDescription(balance);
+                        var threshold = 5;
 
-                    if (balance < threshold)
-                    {
-                        var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
-                        var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("LowBalanceAlert"), balanceDescription))
+                        if (localHelper.KeyExists("BalanceThreshold"))
                         {
-                            Tag = "65",
-                            Group = "Balance"
-                        };
-                        toast.Show();
+                            threshold = localHelper.Read("BalanceThreshold", 5);
+                        }
+
+                        if (balance < threshold)
+                        {
+                            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
+                            var toast = new NotificationToast(".Net Campus", String.Format(resourceLoader.GetString("LowBalanceAlertNotification"), balanceDescription))
+                            {
+                                Tag = "65",
+                                Group = "Balance"
+                            };
+                            toast.Show();
+                        }
                     }
                 }
             }

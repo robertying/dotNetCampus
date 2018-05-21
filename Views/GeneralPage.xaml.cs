@@ -190,13 +190,15 @@ namespace CampusNet
         private async Task WiredLogin(Windows.Security.Credentials.PasswordCredential credential)
         {
             var response = await AuthHelper.LoginAsync(4, currentAccount.Username, credential.Password);
+            if (response == null) return;
 
             if (response.Contains("login_ok"))
             {
                 SetLoginButtonAnimation();
                 await GetConnectionStatusAsync();
 
-                if ((await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password)).Contains("login_error"))
+                var response6 = await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);
+                if (response6 != null && response6.Contains("login_error"))
                 {
                     await Task.Delay(10100);
                     await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);

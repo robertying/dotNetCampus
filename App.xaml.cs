@@ -289,6 +289,8 @@ namespace CampusNet
                     }
 
                     var response = await AuthHelper.LoginAsync(4, currentAccount.Username, credential.Password);
+                    if (response == null) return;
+
                     if (response.Contains("login_ok"))
                     {
                         ShowAutoLoginNotification(ssid);

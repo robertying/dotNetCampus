@@ -188,6 +188,7 @@ namespace CampusNet
             var passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
 
             var challenge = await GetChallengeAsync(stack, username);
+            if (challenge == null) return null;
             if (JsonObject.TryParse(challenge, out JsonObject result) != true) return null;
             string token = result["challenge"].GetString();
 
@@ -251,6 +252,7 @@ namespace CampusNet
             var type = "1";
 
             var challenge = await GetChallengeAsync(stack, username);
+            if (challenge == null) return null;
             if (JsonObject.TryParse(challenge, out JsonObject result) != true) return null;
             string token = result["challenge"].GetString();
 

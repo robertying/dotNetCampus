@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,27 +14,22 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            try
+            httpResponse = await httpClient.GetAsync(BING_URI);
+            if (!httpResponse.IsSuccessStatusCode)
             {
-                httpResponse = await httpClient.GetAsync(BING_URI);
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-
-                HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
-                htmlDocument.LoadHtml(httpResponseBody);
-
-                var data = htmlDocument.DocumentNode.Descendants("urlBase");
-                if (data == null) return null;
-                string url = "https://www.bing.com" + data.First().InnerText + "_1920x1080.jpg";
-
-                return new Uri(url);
-            }
-            catch (Exception ex)
-            {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("GetBingWallpaperAsync(): " + httpResponseBody);
                 return null;
             }
+
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
+            htmlDocument.LoadHtml(httpResponseBody);
+
+            var data = htmlDocument.DocumentNode.Descendants("urlBase");
+            if (data == null) return null;
+            string url = "https://www.bing.com" + data.First().InnerText + "_1920x1080.jpg";
+
+            return new Uri(url);
         }
     }
 }

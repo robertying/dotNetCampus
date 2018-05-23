@@ -46,20 +46,15 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            try
+            httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
+            if (!httpResponse.IsSuccessStatusCode)
             {
-                httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                Debug.WriteLine("UseregHelper.LoginAsync(): " + httpResponseBody);
-                return httpResponseBody;
-            }
-            catch (Exception ex)
-            {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("UseregHelper.LoginAsync(): " + httpResponseBody);
                 return null;
             }
+
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            Debug.WriteLine("UseregHelper.LoginAsync(): " + httpResponseBody);
+            return httpResponseBody;
         }
 
         public static async Task<string> LogoutAsync(string username, string password, string id)
@@ -78,20 +73,15 @@ namespace CampusNet
                 Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
                 string httpResponseBody = "";
 
-                try
+                httpResponse = await httpClient.PostAsync(new Uri(SESSIONS_URL), httpForm);
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    httpResponse = await httpClient.PostAsync(new Uri(SESSIONS_URL), httpForm);
-                    httpResponse.EnsureSuccessStatusCode();
-                    httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                    Debug.WriteLine("UseregHelper.LogoutAsync(): " + httpResponseBody);
-                    return httpResponseBody;
-                }
-                catch (Exception ex)
-                {
-                    httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                    Debug.WriteLine("UseregHelper.LoginAsync(): " + httpResponseBody);
                     return null;
                 }
+
+                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+                Debug.WriteLine("UseregHelper.LogoutAsync(): " + httpResponseBody);
+                return httpResponseBody;
             }
             else
             {
@@ -107,24 +97,19 @@ namespace CampusNet
                 Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
                 string httpResponseBody = "";
 
-                try
+                httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
-                    httpResponse.EnsureSuccessStatusCode();
-                    httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-
-                    HtmlDocument htmlDocument = new HtmlDocument();
-                    htmlDocument.LoadHtml(httpResponseBody);
-                    var data = htmlDocument.DocumentNode.Descendants("input").Where(d =>
-                        d.Attributes.Contains("type") && d.Attributes["type"].Value.Contains("checkbox"));
-                    return data.Count() - 1;
-                }
-                catch (Exception ex)
-                {
-                    httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                    Debug.WriteLine("UseregHelper.GetSessionNumberAsync(): " + httpResponseBody);
                     return -1;
                 }
+
+                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                HtmlDocument htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(httpResponseBody);
+                var data = htmlDocument.DocumentNode.Descendants("input").Where(d =>
+                    d.Attributes.Contains("type") && d.Attributes["type"].Value.Contains("checkbox"));
+                return data.Count() - 1;
             }
             else
             {
@@ -142,24 +127,23 @@ namespace CampusNet
                 string infoPage = "";
                 string sessionPage = "";
 
-                try
+                httpResponse = await httpClient.GetAsync(new Uri(INFO_URL));
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    httpResponse = await httpClient.GetAsync(new Uri(INFO_URL));
-                    httpResponse.EnsureSuccessStatusCode();
-                    infoPage = await httpResponse.Content.ReadAsStringAsync();
-
-                    httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
-                    httpResponse.EnsureSuccessStatusCode();
-                    sessionPage = await httpResponse.Content.ReadAsStringAsync();
-
-                    return ParsePages(infoPage, sessionPage);
-                }
-                catch (Exception ex)
-                {
-                    infoPage = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                    Debug.WriteLine("UseregHelper.GetInfo(): (info) " + infoPage + " (session) " + sessionPage);
                     return null;
                 }
+
+                infoPage = await httpResponse.Content.ReadAsStringAsync();
+
+                httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+
+                sessionPage = await httpResponse.Content.ReadAsStringAsync();
+
+                return ParsePages(infoPage, sessionPage);
             }
             else
             {
@@ -245,33 +229,28 @@ namespace CampusNet
                                      "end_time=" + queryDate + '&' +
                                      "offset=10000";
 
-                try
+                httpResponse = await httpClient.GetAsync(new Uri(DETAIL_URL + queryString));
+                if (!httpResponse.IsSuccessStatusCode)
                 {
-                    httpResponse = await httpClient.GetAsync(new Uri(DETAIL_URL + queryString));
-                    httpResponse.EnsureSuccessStatusCode();
-                    httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-
-                    HtmlDocument detailHTML = new HtmlDocument();
-                    detailHTML.LoadHtml(httpResponseBody);
-                    var data = detailHTML.DocumentNode.Descendants("td").Where(d =>
-                    d.Attributes.Contains("align") && d.Attributes["align"].Value.Contains("right"));
-
-                    for (int j = 2; j < data.Count(); j = j + 4)
-                    {
-                        dayUsage += Utility.ParseUsageString(data.ElementAt(j).InnerText);
-                    }
-                    DetailUsage.Add(new UsageWithDate
-                    {
-                        Date = i,
-                        Usage = dayUsage / 1e9
-                    });
-                }
-                catch (Exception ex)
-                {
-                    httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                    Debug.WriteLine("UseregHelper.GetDetailUsageForChart(): " + httpResponseBody);
                     return null;
                 }
+
+                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+
+                HtmlDocument detailHTML = new HtmlDocument();
+                detailHTML.LoadHtml(httpResponseBody);
+                var data = detailHTML.DocumentNode.Descendants("td").Where(d =>
+                d.Attributes.Contains("align") && d.Attributes["align"].Value.Contains("right"));
+
+                for (int j = 2; j < data.Count(); j = j + 4)
+                {
+                    dayUsage += Utility.ParseUsageString(data.ElementAt(j).InnerText);
+                }
+                DetailUsage.Add(new UsageWithDate
+                {
+                    Date = i,
+                    Usage = dayUsage / 1e9
+                });
             }
             return DetailUsage;
         }

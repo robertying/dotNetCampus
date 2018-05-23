@@ -103,6 +103,7 @@
     <Compile Include="Helpers\AssetsHelper.cs" />
     <Compile Include="Helpers\AuthHelper.cs" />
     <Compile Include="Helpers\CredentialHelper.cs" />
+    <Compile Include="Helpers\NotificationTile.cs" />
     <Compile Include="Helpers\NotificationToast.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\Status.cs" />

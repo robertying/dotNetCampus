@@ -150,13 +150,17 @@ namespace CampusNet
         private async void Run(IBackgroundTaskInstance taskInstance)
         {
             BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
-            if (taskInstance.Task.Name != "Time Trigger")
+            switch (taskInstance.Task.Name)
             {
-                await Connect();
-            }
-            else
-            {
-                await LowBalanceAlert();
+                case "LowBalanceAlert Trigger":
+                    await LowBalanceAlert();
+                    break;
+                case "TileUpdate Trigger":
+                    await UpdateTile();
+                    break;
+                default:
+                    await Connect();
+                    break;
             }
             deferral.Complete();
         }
@@ -210,7 +214,8 @@ namespace CampusNet
 
             var isNetworkTriggerSet = false;
             var isSessionTriggerSet = false;
-            var isTimeTriggerSet = false;
+            var isLowBalanceAlertTriggerSet = false;
+            var isTileUpdateTriggerSet = false;
             foreach (var item in BackgroundTaskRegistration.AllTasks)
             {
                 if (item.Value.Name == "Network Trigger")
@@ -221,9 +226,13 @@ namespace CampusNet
                 {
                     isSessionTriggerSet = true;
                 }
-                if (item.Value.Name == "Time Trigger")
+                if (item.Value.Name == "LowBalanceAlert Trigger")
                 {
-                    isTimeTriggerSet = true;
+                    isLowBalanceAlertTriggerSet = true;
+                }
+                if (item.Value.Name == "TileUpdate Trigger")
+                {
+                    isTileUpdateTriggerSet = true;
                 }
             }
 
@@ -239,11 +248,19 @@ namespace CampusNet
                 builder.Name = "Session Trigger";
                 registeredTask = builder.Register();
             }
-            if (!isTimeTriggerSet)
+            if (!isLowBalanceAlertTriggerSet)
             {
                 builder.SetTrigger(new TimeTrigger(1440, false));
                 builder.AddCondition(new SystemCondition(SystemConditionType.UserPresent));
-                builder.Name = "Time Trigger";
+                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                builder.Name = "LowBalanceAlert Trigger";
+                registeredTask = builder.Register();
+            }
+            if (!isTileUpdateTriggerSet)
+            {
+                builder.SetTrigger(new TimeTrigger(180, false));
+                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                builder.Name = "TileUpdate Trigger";
                 registeredTask = builder.Register();
             }
         }
@@ -448,6 +465,26 @@ namespace CampusNet
                             toast.Show();
                         }
                     }
+                }
+            }
+        }
+
+        private async Task UpdateTile()
+        {
+            var profile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+
+            if (profile != null)
+            {
+                var status = await NetHelper.GetStatusAsync();
+                if (status != null)
+                {
+                    var usage = Utility.GetUsageDescription((long)status["total_usage"]);
+                    var balance = Utility.GetBalanceDescription(Convert.ToDouble(status["balance"]));
+                    var username = status["username"] as string;
+                    var network = profile.ProfileName;
+
+                    var tile = new NotificationTile(username, usage, balance, network);
+                    tile.Update();
                 }
             }
         }

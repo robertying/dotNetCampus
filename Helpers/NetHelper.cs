@@ -81,6 +81,7 @@ namespace CampusNet
             }
 
             httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            if (httpResponseBody == "") return null;
             Debug.WriteLine("NetHelper.GetStatusAsync(): " + httpResponseBody);
 
             var info_strs = httpResponseBody.Split(',');

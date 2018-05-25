@@ -14,7 +14,14 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            httpResponse = await httpClient.GetAsync(BING_URI);
+            try
+            {
+                httpResponse = await httpClient.GetAsync(BING_URI);
+            }
+            catch
+            {
+                return null;
+            }
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return null;

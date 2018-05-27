@@ -13,6 +13,7 @@ namespace CampusNet
         private static readonly string AUTH6_URL = "https://auth6.tsinghua.edu.cn/cgi-bin/srun_portal";
         private static readonly string AUTH4_CHALLENGE_URL = "https://auth4.tsinghua.edu.cn/cgi-bin/get_challenge";
         private static readonly string AUTH6_CHALLENGE_URL = "https://auth6.tsinghua.edu.cn/cgi-bin/get_challenge";
+        private static readonly string USER_AGENT = ".Net Campus";
 
         private static List<long> S(string a, bool b)
         {
@@ -147,6 +148,8 @@ namespace CampusNet
         private static async Task<string> GetChallengeAsync(int stack, string username)
         {
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+            var httpHeaders = httpClient.DefaultRequestHeaders;
+            httpHeaders.UserAgent.TryParseAdd(USER_AGENT);
 
             string CHALLENGE_URL;
             if (stack == 4)
@@ -162,23 +165,18 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            try
+            httpResponse = await httpClient.GetAsync(new Uri(queryString));
+            if (!httpResponse.IsSuccessStatusCode)
             {
-                httpResponse = await httpClient.GetAsync(new Uri(queryString));
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                Debug.WriteLine("AuthHelper.GetChallengeAsync(): " + httpResponseBody);
-
-                int begin = httpResponseBody.IndexOf("{");
-                int end = httpResponseBody.LastIndexOf("}");
-                return httpResponseBody.Substring(begin, end - begin + 1);
-            }
-            catch (Exception ex)
-            {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("AuthHelper.GetChallengeAsync(): " + httpResponseBody);
                 return null;
             }
+
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            Debug.WriteLine("AuthHelper.GetChallengeAsync(): " + httpResponseBody);
+
+            int begin = httpResponseBody.IndexOf("{");
+            int end = httpResponseBody.LastIndexOf("}");
+            return httpResponseBody.Substring(begin, end - begin + 1);
         }
 
         public static async Task<string> LoginAsync(int stack, string username, string password)
@@ -215,35 +213,32 @@ namespace CampusNet
             data["chksum"] = Utility.ComputeSHA1(token + username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
 
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
+            var httpHeaders = httpClient.DefaultRequestHeaders;
+            httpHeaders.UserAgent.TryParseAdd(USER_AGENT);
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
             var httpForm = new Windows.Web.Http.HttpFormUrlEncodedContent(data);
 
-            try
+            string URL;
+            if (stack == 4)
             {
-                string URL;
-                if (stack == 4)
-                {
-                    URL = AUTH4_URL;
-                }
-                else
-                {
-                    URL = AUTH6_URL;
-                }
-
-                httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                Debug.WriteLine("AuthHelper.LoginAsync(): " + httpResponseBody);
-
-                return httpResponseBody;
+                URL = AUTH4_URL;
             }
-            catch (Exception ex)
+            else
             {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("AuthHelper.LoginAsync(): " + httpResponseBody);
+                URL = AUTH6_URL;
+            }
+
+            httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
                 return null;
             }
+
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            Debug.WriteLine("AuthHelper.LoginAsync(): " + httpResponseBody);
+
+            return httpResponseBody;
         }
 
         public static async Task<string> LogoutAsync(int stack, string username, string password)
@@ -280,31 +275,26 @@ namespace CampusNet
             string httpResponseBody = "";
             var httpForm = new Windows.Web.Http.HttpFormUrlEncodedContent(data);
 
-            try
+            string URL;
+            if (stack == 4)
             {
-                string URL;
-                if (stack == 4)
-                {
-                    URL = AUTH4_URL;
-                }
-                else
-                {
-                    URL = AUTH6_URL;
-                }
-
-                httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                Debug.WriteLine("AuthHelper.LogoutAsync(): " + httpResponseBody);
-
-                return httpResponseBody;
+                URL = AUTH4_URL;
             }
-            catch (Exception ex)
+            else
             {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("AuthHelper.LogoutAsync(): " + httpResponseBody);
+                URL = AUTH6_URL;
+            }
+
+            httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
                 return null;
             }
+
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            Debug.WriteLine("AuthHelper.LogoutAsync(): " + httpResponseBody);
+
+            return httpResponseBody;
         }
     }
 }

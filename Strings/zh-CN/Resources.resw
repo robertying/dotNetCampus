@@ -385,4 +385,13 @@
   <data name="LowBalanceAlert.Text" xml:space="preserve">
     <value>余额预警</value>
   </data>
+  <data name="Balance" xml:space="preserve">
+    <value>余额</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>网络</value>
+  </data>
+  <data name="Usage" xml:space="preserve">
+    <value>流量</value>
+  </data>
 </root>

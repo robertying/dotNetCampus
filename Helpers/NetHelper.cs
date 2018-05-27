@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,19 +26,16 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            try
+            httpResponse = await httpClient.GetAsync(new Uri(queryString));
+
+            if (httpResponse.IsSuccessStatusCode)
             {
-                httpResponse = await httpClient.GetAsync(new Uri(queryString));
-                httpResponse.EnsureSuccessStatusCode();
                 httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
                 Debug.WriteLine("NetHelper.LoginAsync(): " + httpResponseBody);
-
                 return httpResponseBody;
             }
-            catch (Exception ex)
+            else
             {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("NetHelper.LoginAsync(): " + httpResponseBody);
                 return null;
             }
         }
@@ -57,18 +53,16 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            try
+            httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
+
+            if (httpResponse.IsSuccessStatusCode)
             {
-                httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
-                httpResponse.EnsureSuccessStatusCode();
                 httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
                 Debug.WriteLine("NetHelper.LogoutAsync(): " + httpResponseBody);
                 return httpResponseBody;
             }
-            catch (Exception ex)
+            else
             {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("NetHelper.LogoutAsync(): " + httpResponseBody);
                 return null;
             }
         }
@@ -80,49 +74,51 @@ namespace CampusNet
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
             string httpResponseBody = "";
 
-            try
+            httpResponse = await httpClient.GetAsync(new Uri(STATUS_URL));
+            if (!httpResponse.IsSuccessStatusCode)
             {
-                httpResponse = await httpClient.GetAsync(new Uri(STATUS_URL));
-                httpResponse.EnsureSuccessStatusCode();
-                httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-                Debug.WriteLine("NetHelper.GetStatusAsync(): " + httpResponseBody);
-
-                var info_strs = httpResponseBody.Split(',');
-                if (info_strs == null) return null;
-
-                Dictionary<string, object> info = new Dictionary<string, object>
-                {
-                    ["username"] = info_strs[0],
-                    ["start_time"] = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(info_strs[1])),
-                    ["usage"] = Convert.ToInt64(info_strs[3]),
-                    ["total_usage"] = Convert.ToInt64(info_strs[6]),
-                    ["ip"] = info_strs[8],
-                    ["balance"] = Convert.ToDouble(info_strs[11])
-                };
-                return info;
-            }
-            catch (Exception ex)
-            {
-                httpResponseBody = "Error: " + ex.HResult.ToString("X") + " Message: " + ex.Message;
-                Debug.WriteLine("NetHelper.GetStatusAsync(): " + httpResponseBody);
                 return null;
             }
+
+            httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
+            if (httpResponseBody == "") return null;
+            Debug.WriteLine("NetHelper.GetStatusAsync(): " + httpResponseBody);
+
+            var info_strs = httpResponseBody.Split(',');
+            if (info_strs == null) return null;
+
+            Dictionary<string, object> info = new Dictionary<string, object>
+            {
+                ["username"] = info_strs[0],
+                ["start_time"] = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(info_strs[1])),
+                ["usage"] = Convert.ToInt64(info_strs[3]),
+                ["total_usage"] = Convert.ToInt64(info_strs[6]),
+                ["ip"] = info_strs[8],
+                ["balance"] = Convert.ToDouble(info_strs[11])
+            };
+            return info;
         }
 
         public static async Task<bool> IsOnline()
         {
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-            var cancellationTokenSource = new CancellationTokenSource(100);
+            var cancellationTokenSource = new CancellationTokenSource(1000);
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
 
             try
             {
                 httpResponse = await httpClient.GetAsync(new Uri("https://net.tsinghua.edu.cn")).AsTask(cancellationTokenSource.Token);
-                httpResponse.EnsureSuccessStatusCode();
+            }
+            catch (TaskCanceledException)
+            {
+                return false;
+            }
 
+            if (httpResponse.IsSuccessStatusCode)
+            {
                 return true;
             }
-            catch
+            else
             {
                 return false;
             }
@@ -131,17 +127,23 @@ namespace CampusNet
         public static async Task<bool> IsCampus()
         {
             Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-            var cancellationTokenSource = new CancellationTokenSource(500);
+            var cancellationTokenSource = new CancellationTokenSource(1000);
             Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
 
             try
             {
                 httpResponse = await httpClient.GetAsync(new Uri("https://usereg.tsinghua.edu.cn")).AsTask(cancellationTokenSource.Token);
-                httpResponse.EnsureSuccessStatusCode();
+            }
+            catch (TaskCanceledException)
+            {
+                return false;
+            }
 
+            if (httpResponse.IsSuccessStatusCode)
+            {
                 return true;
             }
-            catch
+            else
             {
                 return false;
             }

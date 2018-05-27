@@ -386,4 +386,13 @@ Balance: {0}</value>
   <data name="LowBalanceAlert.Text" xml:space="preserve">
     <value>Balance Alert</value>
   </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="Network" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="Usage" xml:space="preserve">
+    <value>Usage</value>
+  </data>
 </root>

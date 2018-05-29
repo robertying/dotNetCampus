@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Json;
 
@@ -15,134 +16,120 @@ namespace CampusNet
         private static readonly string AUTH6_CHALLENGE_URL = "https://auth6.tsinghua.edu.cn/cgi-bin/get_challenge";
         private static readonly string USER_AGENT = ".Net Campus";
 
-        private static List<long> S(string a, bool b)
+        private static unsafe List<uint> S(string a, bool b)
         {
-            var c = a.Length;
-            List<long> v = new List<long>();
-
-            for (var i = 0; i < c; i += 4)
+            int c = a.Length;
+            List<uint> v = new List<uint>();
+            uint value = 0;
+            byte* p = (byte*)&value;
+            for (int i = 0; i < c; i += 4)
             {
-                v.Add(
-                    Convert.ToInt64(a[i]) |
-                    Convert.ToInt64(i + 1 >= c ? 0 : a[i + 1]) << 8 |
-                    Convert.ToInt64(i + 2 >= c ? 0 : a[i + 2]) << 16 |
-                    Convert.ToInt64(i + 3 >= c ? 0 : a[i + 3]) << 24
-                    );
+                p[0] = (byte)a[i];
+                p[1] = (byte)(i + 1 >= c ? 0 : a[i + 1]);
+                p[2] = (byte)(i + 2 >= c ? 0 : a[i + 2]);
+                p[3] = (byte)(i + 3 >= c ? 0 : a[i + 3]);
+                v.Add(value);
             }
-
-            if (b) v.Add(c);
+            if (b)
+            {
+                v.Add((uint)c);
+            }
             return v;
         }
 
-        private static string L(List<long> a, bool b)
+        private static unsafe string L(List<uint> a, bool b)
         {
-            var d = a.Count();
-            long c = (d - 1) << 2;
-            List<string> aa = new List<string>();
-
+            int d = a.Count;
+            uint c = ((uint)(d - 1)) << 2;
+            StringBuilder aa = new StringBuilder();
             if (b)
             {
-                var m = a[d - 1];
+                uint m = a[d - 1];
                 if (m < c - 3 || m > c)
                 {
                     return null;
                 }
                 c = m;
             }
-            for (var i = 0; i < d; i++)
+            uint value = 0;
+            byte* p = (byte*)&value;
+            for (int i = 0; i < d; i++)
             {
-                aa.Add(Convert.ToChar(a[i] & 0xff).ToString() + Convert.ToChar((a[i] >> 8) & 0xff).ToString() + Convert.ToChar((a[i] >> 16) & 0xff).ToString() + Convert.ToChar((a[i] >> 24) & 0xff).ToString());
+                value = a[i];
+                aa.Append((char)p[0]);
+                aa.Append((char)p[1]);
+                aa.Append((char)p[2]);
+                aa.Append((char)p[3]);
             }
-
             if (b)
             {
-                return String.Join("", aa).Substring(0, (int)c);
+                return aa.ToString().Substring(0, (int)c);
             }
             else
             {
-                return String.Join("", aa);
+                return aa.ToString();
             }
         }
 
         private static string Encode(string str, string key)
         {
-            long RightShift(long x, int nn)
+            if (str.Length == 0)
             {
-                return x >> nn;
+                return String.Empty;
             }
-
-            long LeftShift(long x, int nn)
-            {
-                return (x << nn) & 4294967295;
-            }
-
-            if (str.Length == 0) return String.Empty;
-
-            var v = S(str, true);
-            var k = S(key, false);
-
+            List<uint> v = S(str, true);
+            List<uint> k = S(key, false);
             while (k.Count < 4)
             {
                 k.Add(0);
             }
-
-            var n = v.Count() - 1;
-            var z = v[n];
-            var y = v[0];
-            var c = 0x86014019 | 0x183639A0;
-            var q = Math.Floor(6.0 + 52 / (n + 1));
-            long d = 0;
-
-            while (0 < q)
+            int n = v.Count - 1;
+            uint z = v[n];
+            uint y = v[0];
+            int q = 6 + 52 / (n + 1);
+            uint d = 0;
+            while (q-- > 0)
             {
-                q -= 1;
-                d = d + c & (0x8CE0D9BF | 0x731F2640);
-                var e = RightShift(d, 2) & 3;
-                for (int p = 0; p < n; p++)
+                d += 0x9E3779B9;
+                uint e = (d >> 2) & 3;
+                for (int p = 0; p <= n; p++)
                 {
-                    y = v[p + 1];
-                    long mm = RightShift(z, 5) ^ LeftShift(y, 2);
-                    mm += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                    long tt = (p & 3) ^ e;
-                    mm += k[(int)tt] ^ z;
-                    z = v[p] = v[p] + mm & (0xEFB8D130 | 0x10472ECF);
+                    y = v[p == n ? 0 : p + 1];
+                    uint m = (z >> 5) ^ (y << 2);
+                    m += (y >> 3) ^ (z << 4) ^ (d ^ y);
+                    m += k[(p & 3) ^ (int)e] ^ z;
+                    z = v[p] += m;
                 }
-
-                y = v[0];
-                long m = RightShift(z, 5) ^ LeftShift(y, 2);
-                m += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                long t = (n & 3) ^ e;
-                m += k[(int)t] ^ z;
-                z = v[n] = v[n] + m & (0xBB390742 | 0x44C6F8BD);
             }
-
             return L(v, false);
         }
 
-        private static string Base64Encode(string t)
+        private unsafe static string Base64Encode(string t)
         {
-            var n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
-            var u = "";
-            var a = t.Length;
-            var r = "=";
-
-            for (var o = 0; o < a; o += 3)
+            string n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
+            StringBuilder u = new StringBuilder();
+            int a = t.Length;
+            char r = '=';
+            int h = 0;
+            byte* p = (byte*)&h;
+            for (int o = 0; o < a; o += 3)
             {
-                var h = Convert.ToInt32(t[o]) << 16 | (o + 1 < a ? Convert.ToInt32(t[o + 1]) << 8 : 0) | (o + 2 < a ? Convert.ToInt32(t[o + 2]) : 0);
-                for (var i = 0; i < 4; i += 1)
+                p[2] = (byte)t[o];
+                p[1] = (byte)(o + 1 < a ? t[o + 1] : 0);
+                p[0] = (byte)(o + 2 < a ? t[o + 2] : 0);
+                for (int i = 0; i < 4; i += 1)
                 {
                     if (o * 8 + i * 6 > a * 8)
                     {
-                        u += r;
+                        u.Append(r);
                     }
                     else
                     {
-                        u += n.ElementAt(h >> 6 * (3 - i) & 63);
+                        u.Append(n[h >> 6 * (3 - i) & 0x3F]);
                     }
                 }
             }
-
-            return u;
+            return u.ToString();
         }
 
         private static async Task<string> GetChallengeAsync(int stack, string username)

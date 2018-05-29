@@ -208,6 +208,10 @@ namespace CampusNet
             {
                 SetLoginButton();
             }
+            else if (response == "not_online_error")
+            {
+                await WirelessLogin();
+            }
             else if (response.Contains("login_error"))
             {
                 await Task.Delay(10100);
@@ -425,6 +429,10 @@ namespace CampusNet
             var response = await AuthHelper.LogoutAsync(4, currentAccount.Username, "111");
 
             if (response.Contains("logout_ok"))
+            {
+                SetLogoutButtonAnimation();
+            }
+            else if (response == "not_online_error")
             {
                 SetLogoutButtonAnimation();
             }

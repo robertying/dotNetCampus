@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Web.Http;
 
 namespace CampusNet
 {
     public static class AssetsHelper
     {
         private static readonly Uri BING_URI = new Uri("https://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US");
+        private static HttpClient httpClient = new HttpClient();
 
         public static async Task<Uri> GetBingWallpaperAsync()
         {
-            var httpClient = new Windows.Web.Http.HttpClient();
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
             try

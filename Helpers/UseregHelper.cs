@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Windows.Web.Http;
 
 namespace CampusNet
 {
@@ -28,22 +29,21 @@ namespace CampusNet
         private static readonly string INFO_URL = BASE_URL + "/user_info.php";
         private static readonly string SESSIONS_URL = BASE_URL + "/online_user_ipv4.php";
         private static readonly string DETAIL_URL = BASE_URL + "/user_detail_list.php";
+        private static HttpClient httpClient = new HttpClient();
 
         public static Dictionary<string, object> Info { get; set; }
 
         public static async Task<string> LoginAsync(string username, string password)
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
             Dictionary<string, string> form = new Dictionary<string, string>
             {
                 ["action"] = "login",
                 ["user_login_name"] = username,
                 ["user_password"] = password
             };
-            var httpForm = new Windows.Web.Http.HttpFormUrlEncodedContent(form);
+            var httpForm = new HttpFormUrlEncodedContent(form);
 
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
             httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
@@ -61,16 +61,14 @@ namespace CampusNet
         {
             if (await LoginAsync(username, password) == "ok")
             {
-                Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
                 Dictionary<String, String> form = new Dictionary<string, string>
                 {
                     ["action"] = "drops",
                     ["user_ip"] = id + ','
                 };
-                var httpForm = new Windows.Web.Http.HttpFormUrlEncodedContent(form);
+                var httpForm = new HttpFormUrlEncodedContent(form);
 
-                Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+                HttpResponseMessage httpResponse = new HttpResponseMessage();
                 string httpResponseBody = "";
 
                 httpResponse = await httpClient.PostAsync(new Uri(SESSIONS_URL), httpForm);
@@ -93,8 +91,7 @@ namespace CampusNet
         {
             if (await LoginAsync(username, password) == "ok")
             {
-                Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-                Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+                HttpResponseMessage httpResponse = new HttpResponseMessage();
                 string httpResponseBody = "";
 
                 httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
@@ -121,9 +118,7 @@ namespace CampusNet
         {
             if (await LoginAsync(username, password) == "ok")
             {
-                Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
-                Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+                HttpResponseMessage httpResponse = new HttpResponseMessage();
                 string infoPage = "";
                 string sessionPage = "";
 
@@ -195,8 +190,7 @@ namespace CampusNet
 
         public static async Task<List<UsageWithDate>> GetDetailUsageForChart()
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
             double dayUsage = 0;
             List<UsageWithDate> DetailUsage = new List<UsageWithDate>();

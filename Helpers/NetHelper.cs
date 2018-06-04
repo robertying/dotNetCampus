@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Web.Http;
 
 namespace CampusNet
 {
@@ -13,17 +14,16 @@ namespace CampusNet
         private static readonly string LOGIN_URL = BASE_URL + "/do_login.php";
         private static readonly string ONLINE_URL = BASE_URL + "/wired/succeed.html?online";
         private static readonly string USER_AGENT = ".Net Campus";
+        private static HttpClient httpClient = new HttpClient();
 
         public static async Task<string> LoginAsync(string username, string password)
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
             string queryString = LOGIN_URL + "?action=login&username=" + username + "&password={MD5_HEX}" + password + "&ac_id=1";
 
             var httpHeaders = httpClient.DefaultRequestHeaders;
             httpHeaders.UserAgent.TryParseAdd(USER_AGENT);
 
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
             httpResponse = await httpClient.GetAsync(new Uri(queryString));
@@ -42,15 +42,13 @@ namespace CampusNet
 
         public static async Task<string> LogoutAsync()
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
             Dictionary<string, string> form = new Dictionary<string, string>
             {
                 ["action"] = "logout"
             };
-            var httpForm = new Windows.Web.Http.HttpFormUrlEncodedContent(form);
+            var httpForm = new HttpFormUrlEncodedContent(form);
 
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
             httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
@@ -69,9 +67,7 @@ namespace CampusNet
 
         public static async Task<Dictionary<string, object>> GetStatusAsync()
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
-
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
             httpResponse = await httpClient.GetAsync(new Uri(STATUS_URL));
@@ -101,9 +97,8 @@ namespace CampusNet
 
         public static async Task<bool> IsOnline()
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
             var cancellationTokenSource = new CancellationTokenSource(1000);
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
 
             try
             {
@@ -126,9 +121,8 @@ namespace CampusNet
 
         public static async Task<bool> IsCampus()
         {
-            Windows.Web.Http.HttpClient httpClient = new Windows.Web.Http.HttpClient();
             var cancellationTokenSource = new CancellationTokenSource(1000);
-            Windows.Web.Http.HttpResponseMessage httpResponse = new Windows.Web.Http.HttpResponseMessage();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
 
             try
             {

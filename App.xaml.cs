@@ -330,7 +330,7 @@ namespace CampusNet
                         ShowWrongPasswordNotification(ssid, currentAccount.Username);
                     }
                 }
-                else if (!isWired && ssid.Contains("Tsinghua") || _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
+                else if (!isWired && _favoriteNetworks.Where(u => u.Ssid == ssid).Count() != 0)
                 {
                     var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
 
@@ -350,6 +350,73 @@ namespace CampusNet
                     else if (response == "E2553: Password is error.")
                     {
                         ShowWrongPasswordNotification(ssid, currentAccount.Username);
+                    }
+
+                    var credential = CredentialHelper.GetCredentialFromLocker(currentAccount.Username);
+                    if (credential != null)
+                    {
+                        credential.RetrievePassword();
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                    response = await AuthHelper.LoginAsync(4, currentAccount.Username, credential.Password);
+                    if (response == null) return;
+
+                    if (response.Contains("login_ok"))
+                    {
+                        ShowAutoLoginNotification(ssid);
+                        await Task.Delay(10100);
+                        await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);
+                    }
+                    else if (response == "ip_already_online_error")
+                    {
+                        ShowAutoLoginNotification(ssid);
+                    }
+                    else if (response.Contains("login_error"))
+                    {
+                        await Task.Delay(10100);
+                        await AuthHelper.LoginAsync(4, currentAccount.Username, credential.Password);
+                        await Task.Delay(10100);
+                        await AuthHelper.LoginAsync(6, currentAccount.Username, credential.Password);
+                    }
+                    else
+                    {
+                        ShowWrongPasswordNotification(ssid, currentAccount.Username);
+                    }
+                }
+                else if (ssid.Contains("Tsinghua"))
+                {
+                    var response = await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
+
+                    if (response == "Login is successful.")
+                    {
+                        ShowAutoLoginNotification(ssid);
+                    }
+                    else if (response == "E2620: You are already online." || response == "IP has been online, please logout.")
+                    {
+                        ShowAutoLoginNotification(ssid);
+                    }
+                    else if (response == "E2532: The two authentication interval cannot be less than 3 seconds.")
+                    {
+                        await Task.Delay(3500);
+                        await NetHelper.LoginAsync(currentAccount.Username, currentAccount.Password);
+                    }
+                    else if (response == "E2553: Password is error.")
+                    {
+                        ShowWrongPasswordNotification(ssid, currentAccount.Username);
+                    }
+
+                    var credential = CredentialHelper.GetCredentialFromLocker(currentAccount.Username);
+                    if (credential != null)
+                    {
+                        credential.RetrievePassword();
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
             }

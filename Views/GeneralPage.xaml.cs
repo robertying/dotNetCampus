@@ -147,7 +147,28 @@ namespace CampusNet
 
                 await WiredLogin(credential);
             }
-            else if (!isWired && App.FavoriteNetworks.Where(u => u.Ssid == connectedNetwork.Ssid).Count() != 0 || connectedNetwork.Ssid.Contains("Tsinghua"))
+            else if (!isWired && App.FavoriteNetworks.Where(u => u.Ssid == connectedNetwork.Ssid).Count() != 0)
+            {
+                await WirelessLogin();
+
+                var credential = CredentialHelper.GetCredentialFromLocker(currentAccount.Username);
+                if (credential != null)
+                {
+                    credential.RetrievePassword();
+                }
+                else
+                {
+                    App.Accounts.Remove(currentAccount);
+
+                    var rootFrame = Window.Current.Content as Frame;
+                    rootFrame.Navigate(typeof(WelcomePage));
+
+                    return;
+                }
+
+                await WiredLogin(credential);
+            }
+            else if (connectedNetwork.Ssid.Contains("Tsinghua"))
             {
                 await WirelessLogin();
             }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;

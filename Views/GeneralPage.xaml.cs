@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -8,6 +8,7 @@ using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Windows.Networking.Connectivity;
 
 namespace CampusNet
 {
@@ -54,7 +55,7 @@ namespace CampusNet
 
         private void GetCurrentNetwork()
         {
-            var connectedProfile = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+            var connectedProfile = NetworkInformation.GetInternetConnectionProfile();
             if (connectedProfile != null)
             {
                 connectedNetwork = new Network
@@ -125,7 +126,7 @@ namespace CampusNet
 
         private async Task LoginNetworkIfFavoriteAsync()
         {
-            var isWired = !Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWlanConnectionProfile && !Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile;
+            var isWired = !NetworkInformation.GetInternetConnectionProfile().IsWlanConnectionProfile && !NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile;
 
             if (isWired)
             {
@@ -311,7 +312,7 @@ namespace CampusNet
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            var isWired = !Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWlanConnectionProfile && !Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile;
+            var isWired = !NetworkInformation.GetInternetConnectionProfile().IsWlanConnectionProfile && !NetworkInformation.GetInternetConnectionProfile().IsWwanConnectionProfile;
 
             if (isOnline == false)
             {

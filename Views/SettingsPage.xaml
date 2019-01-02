@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="CampusNet.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -49,7 +49,7 @@
             <TextBlock Margin="24,5,0,0" Style="{StaticResource CaptionTextBlockStyle}">
                 MIT licensed.
             </TextBlock>
-            <TextBlock Margin="24,0,0,0" Style="{StaticResource CaptionTextBlockStyle}">© 2018 Robert Ying. All rights reserved.</TextBlock>
+            <TextBlock Margin="24,0,0,0" Style="{StaticResource CaptionTextBlockStyle}">© 2019 Robert Ying. All rights reserved.</TextBlock>
         </StackPanel>
     </Grid>
 </Page>

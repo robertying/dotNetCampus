@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -448,7 +448,7 @@ namespace CampusNet
 
         private async Task WiredLogout(Windows.Security.Credentials.PasswordCredential credential)
         {
-            var response = await AuthHelper.LogoutAsync(4, currentAccount.Username, "111");
+            var response = await AuthHelper.LogoutAsync(4, currentAccount.Username);
 
             if (response.Contains("logout_ok"))
             {

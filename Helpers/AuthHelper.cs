@@ -243,34 +243,12 @@ namespace CampusNet
             return httpResponseBody;
         }
 
-        public static async Task<string> LogoutAsync(int stack, string username, string password)
+        public static async Task<string> LogoutAsync(int stack, string username)
         {
-            var n = "200";
-            var type = "1";
-
-            var challenge = await GetChallengeAsync(stack, username);
-            if (challenge == null) return null;
-            if (JsonObject.TryParse(challenge, out JsonObject result) != true) return null;
-            string token = result["challenge"].GetString();
-
-            var info = new JsonObject()
-            {
-                ["username"] = JsonValue.CreateStringValue(username),
-                ["ip"] = JsonValue.CreateStringValue(""),
-                ["acid"] = JsonValue.CreateStringValue("1"),
-                ["enc_ver"] = JsonValue.CreateStringValue("s" + "run" + "_bx1")
-            };
-
             var data = new Dictionary<string, string>
             {
-                ["info"] = "{SRBX1}" + Base64Encode(Encode(info.Stringify(), token)),
-                ["action"] = "logout",
-                ["ac_id"] = "1",
-                ["double_stack"] = "1",
-                ["n"] = n,
-                ["type"] = "1"
+                ["action"] = "logout"
             };
-            data["chksum"] = Utility.ComputeSHA1(token + username + token + "1" + token + "" + token + n + token + type + token + data["info"]);
 
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";

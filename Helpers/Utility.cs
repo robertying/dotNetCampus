@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
@@ -33,6 +34,16 @@ namespace CampusNet
             IBuffer buff = CryptographicBuffer.ConvertStringToBinary(str, BinaryStringEncoding.Utf8);
             var hashed = alg.HashData(buff);
             var res = CryptographicBuffer.EncodeToHexString(hashed);
+            return res;
+        }
+
+        public static string ComputeMD5HMAC(string key, string data)
+        {
+            byte[] keyBuff = Encoding.UTF8.GetBytes(key);
+            byte[] dataBuff = Encoding.UTF8.GetBytes(data);
+            var alg = new HMACMD5(keyBuff);
+            var hashed = alg.ComputeHash(dataBuff);
+            var res = BitConverter.ToString(hashed).Replace("-", string.Empty);
             return res;
         }
 

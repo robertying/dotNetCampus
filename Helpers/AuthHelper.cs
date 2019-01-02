@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -185,7 +185,6 @@ namespace CampusNet
         {
             var n = "200";
             var type = "1";
-            var passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
 
             var challenge = await GetChallengeAsync(stack, username);
             if (challenge == null) return null;
@@ -200,6 +199,8 @@ namespace CampusNet
                 ["acid"] = JsonValue.CreateStringValue("1"),
                 ["enc_ver"] = JsonValue.CreateStringValue("s" + "run" + "_bx1")
             };
+
+            var passwordMD5 = Utility.ComputeMD5HMAC(token, password);
 
             var data = new Dictionary<string, string>
             {

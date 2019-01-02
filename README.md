@@ -8,31 +8,31 @@
 
 ### In App
 
-* Wired auth support
+- Wired auth support
 
-* Network usage and balance detail
+- Network usage and balance detail
 
-* Daily usage chart
+- Daily usage chart
 
-* Multi-account support
+- Multi-account support
 
-* Session disconnection
+- Session disconnection
 
 ### UWP Specials
 
-* Auto-login with toast notifications
+- Auto-login with toast notifications
 
-* Live tile showing current account status
+- Live tile showing current account status
 
-* Low balance alert with toast notifications
+- Low balance alert with toast notifications
 
 ## App Pages
 
-* A general page to show the current usage, network, account and number of sessions at the very first glance. A chart indicating the daily usage trend is also available.
+- A general page to show the current usage, network, account and number of sessions at the very first glance. A chart indicating the daily usage trend is also available.
 
-* There is a page for account management where users can have a closer look at those online sessions and choose to disconnect any. This page also enables users to add more than one accounts and switch among them whenever they want.
+- There is a page for account management where users can have a closer look at those online sessions and choose to disconnect any. This page also enables users to add more than one accounts and switch among them whenever they want.
 
-* This app also provides a single page for users to enable auto-login for their chosen networks. Campus networks in the Favorites would be automatically logged in when connected.
+- This app also provides a single page for users to enable auto-login for their chosen networks. Campus networks in the Favorites would be automatically logged in when connected.
 
 ## Screenshots
 
@@ -44,15 +44,17 @@
 
 ### System
 
-* Windows 10, version 1803 build 17134
+- Windows 10, version 1809 build 17763
 
-* Windows 10 Fall Creators Update build 16299
+- Windows 10, version 1803 build 17134
+
+- Windows 10 Fall Creators Update build 16299
 
 ### Development
 
-* Visual Studio 2017
+- Visual Studio 2017
 
-* Windows SDK 17134
+- Windows SDK 17763
 
 ## Contributing
 
@@ -66,4 +68,4 @@ See [Privacy Policy](PRIVACYPOLICY.md).
 
 MIT License
 
-Copyright (c) 2018 Robert Ying
+Copyright (c) 2019 Robert Ying

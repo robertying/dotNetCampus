@@ -24,19 +24,19 @@ namespace CampusNet
                             {
                                 new AdaptiveText()
                                 {
-                                    Text = resourceLoader.GetString("Account")+": "+username
+                                    Text = username
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = resourceLoader.GetString("Usage")+": "+usage
+                                    Text = usage
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = resourceLoader.GetString("Balance")+ ": "+balance,
+                                    Text = balance
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = resourceLoader.GetString("Network")+ ": "+network,
+                                    Text = network
                                 }
                             }
                         }

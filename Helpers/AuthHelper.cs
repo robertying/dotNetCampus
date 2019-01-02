@@ -14,7 +14,6 @@ namespace CampusNet
         private static readonly string AUTH6_URL = "https://auth6.tsinghua.edu.cn/cgi-bin/srun_portal";
         private static readonly string AUTH4_CHALLENGE_URL = "https://auth4.tsinghua.edu.cn/cgi-bin/get_challenge";
         private static readonly string AUTH6_CHALLENGE_URL = "https://auth6.tsinghua.edu.cn/cgi-bin/get_challenge";
-        private static readonly string USER_AGENT = ".Net Campus";
         private static HttpClient httpClient = new HttpClient();
 
         private static List<long> S(string a, bool b)
@@ -149,10 +148,6 @@ namespace CampusNet
 
         private static async Task<string> GetChallengeAsync(int stack, string username)
         {
-
-            var httpHeaders = httpClient.DefaultRequestHeaders;
-            httpHeaders.UserAgent.TryParseAdd(USER_AGENT);
-
             string CHALLENGE_URL;
             if (stack == 4)
             {
@@ -215,8 +210,6 @@ namespace CampusNet
             };
             data["chksum"] = Utility.ComputeSHA1(token + username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
 
-            var httpHeaders = httpClient.DefaultRequestHeaders;
-            httpHeaders.UserAgent.TryParseAdd(USER_AGENT);
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
             var httpForm = new HttpFormUrlEncodedContent(data);

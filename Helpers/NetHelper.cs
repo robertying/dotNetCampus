@@ -25,8 +25,16 @@ namespace CampusNet
 
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
+            var cancellationTokenSource = new CancellationTokenSource(1000);
 
-            httpResponse = await httpClient.GetAsync(new Uri(queryString));
+            try
+            {
+                httpResponse = await httpClient.GetAsync(new Uri(queryString)).AsTask(cancellationTokenSource.Token);
+            }
+            catch
+            {
+                return null;
+            }
 
             if (httpResponse.IsSuccessStatusCode)
             {
@@ -50,8 +58,16 @@ namespace CampusNet
 
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
+            var cancellationTokenSource = new CancellationTokenSource(1000);
 
-            httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
+            try
+            {
+                httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
+            }
+            catch
+            {
+                return null;
+            }
 
             if (httpResponse.IsSuccessStatusCode)
             {
@@ -69,8 +85,17 @@ namespace CampusNet
         {
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
+            var cancellationTokenSource = new CancellationTokenSource(1000);
 
-            httpResponse = await httpClient.GetAsync(new Uri(STATUS_URL));
+            try
+            {
+                httpResponse = await httpClient.GetAsync(new Uri(STATUS_URL));
+            }
+            catch
+            {
+                return null;
+            }
+
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return null;
@@ -104,7 +129,7 @@ namespace CampusNet
             {
                 httpResponse = await httpClient.GetAsync(new Uri("https://net.tsinghua.edu.cn")).AsTask(cancellationTokenSource.Token);
             }
-            catch (TaskCanceledException)
+            catch
             {
                 return false;
             }
@@ -128,7 +153,7 @@ namespace CampusNet
             {
                 httpResponse = await httpClient.GetAsync(new Uri("https://usereg.tsinghua.edu.cn")).AsTask(cancellationTokenSource.Token);
             }
-            catch (TaskCanceledException)
+            catch
             {
                 return false;
             }

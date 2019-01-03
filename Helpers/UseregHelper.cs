@@ -46,7 +46,15 @@ namespace CampusNet
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
-            httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
+            try
+            {
+                httpResponse = await httpClient.PostAsync(new Uri(LOGIN_URL), httpForm);
+            }
+            catch
+            {
+                return null;
+            }
+
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return null;
@@ -71,7 +79,15 @@ namespace CampusNet
                 HttpResponseMessage httpResponse = new HttpResponseMessage();
                 string httpResponseBody = "";
 
-                httpResponse = await httpClient.PostAsync(new Uri(SESSIONS_URL), httpForm);
+                try
+                {
+                    httpResponse = await httpClient.PostAsync(new Uri(SESSIONS_URL), httpForm);
+                }
+                catch
+                {
+                    return null;
+                }
+
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     return null;
@@ -94,7 +110,15 @@ namespace CampusNet
                 HttpResponseMessage httpResponse = new HttpResponseMessage();
                 string httpResponseBody = "";
 
-                httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
+                try
+                {
+                    httpResponse = await httpClient.GetAsync(new Uri(SESSIONS_URL));
+                }
+                catch
+                {
+                    return -1;
+                }
+
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     return -1;
@@ -122,7 +146,15 @@ namespace CampusNet
                 string infoPage = "";
                 string sessionPage = "";
 
-                httpResponse = await httpClient.GetAsync(new Uri(INFO_URL));
+                try
+                {
+                    httpResponse = await httpClient.GetAsync(new Uri(INFO_URL));
+                }
+                catch
+                {
+                    return null;
+                }
+
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     return null;
@@ -223,7 +255,15 @@ namespace CampusNet
                                      "end_time=" + queryDate + '&' +
                                      "offset=10000";
 
-                httpResponse = await httpClient.GetAsync(new Uri(DETAIL_URL + queryString));
+                try
+                {
+                    httpResponse = await httpClient.GetAsync(new Uri(DETAIL_URL + queryString));
+                }
+                catch
+                {
+                    return null;
+                }
+
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     return null;

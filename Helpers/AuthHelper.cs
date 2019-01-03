@@ -162,7 +162,15 @@ namespace CampusNet
             HttpResponseMessage httpResponse = new HttpResponseMessage();
             string httpResponseBody = "";
 
-            httpResponse = await httpClient.GetAsync(new Uri(queryString));
+            try
+            {
+                httpResponse = await httpClient.GetAsync(new Uri(queryString));
+            }
+            catch
+            {
+                return null;
+            }
+
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return null;
@@ -224,7 +232,15 @@ namespace CampusNet
                 URL = AUTH6_URL;
             }
 
-            httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
+            try
+            {
+                httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
+            }
+            catch
+            {
+                return null;
+            }
+
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return null;
@@ -257,7 +273,15 @@ namespace CampusNet
                 URL = AUTH6_URL;
             }
 
-            httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
+            try
+            {
+                httpResponse = await httpClient.PostAsync(new Uri(URL), httpForm);
+            }
+            catch
+            {
+                return null;
+            }
+
             if (!httpResponse.IsSuccessStatusCode)
             {
                 return null;

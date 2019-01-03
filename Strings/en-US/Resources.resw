@@ -394,4 +394,7 @@ Balance: {0}</value>
   <data name="Usage" xml:space="preserve">
     <value>Usage</value>
   </data>
+  <data name="NotOnCampus" xml:space="preserve">
+    <value>It seems you are not on Tsinghua campus. Services are unavailable.</value>
+  </data>
 </root>

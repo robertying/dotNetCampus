@@ -38,6 +38,12 @@ namespace CampusNet
             isOnline = await NetHelper.IsOnline();
             var isCampus = await NetHelper.IsCampus();
 
+            if (!isCampus)
+            {
+                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                LoginButton.IsEnabled = false;
+                Notification.Show(resourceLoader.GetString("NotOnCampus"));
+            }
             if (connectedNetwork != null && isCampus)
             {
                 if (isOnline)

@@ -394,4 +394,7 @@
   <data name="Usage" xml:space="preserve">
     <value>流量</value>
   </data>
+  <data name="NotOnCampus" xml:space="preserve">
+    <value>您似乎未连接到清华校园网，服务将不可用。</value>
+  </data>
 </root>
